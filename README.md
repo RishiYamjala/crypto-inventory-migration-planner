@@ -49,7 +49,7 @@
 - Depth / two-qubit-gate / SWAP trade-off chart
 - Machine-readable CSV evidence
 
-## Verified run results
+## Current provisional run results
 
 These values are generated from the result CSVs—not typed in by hand.
 
@@ -62,7 +62,7 @@ These values are generated from the result CSVs—not typed in by hand.
 | Estimated SWAP overhead | `7.000000` | `7.000000` | `0.000000` |
 | Total compiled operations | `276` | `276` | `0` |
 
-**Interpretation:** under this placeholder topology and common noise model, Processor B produced fewer compiled operations and a higher measured success probability. This is evidence for this experiment—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
+**Interpretation:** the recorded metrics are identical for A and B, so this run does **not** demonstrate a measured performance difference between the provisional configurations. Investigate the transpiled circuits, coupling constraints, and noise-model application before drawing an architecture conclusion. Do not claim that one processor performs better unless regenerated results support it.
 
 Full interpretation: [`report.md`](report.md) · Raw evidence: [`results/tables/`](results/tables/)
 
@@ -102,7 +102,7 @@ jupyter nbconvert --to notebook --execute main.ipynb \
 ├── requirements.txt                  ← environment specification
 ├── report.md                         ← measured analysis + limitations
 ├── data/raw/inventory.csv            ← sample crypto inventory
-├── processors/processor_A.json       ← line topology placeholder
+├── processors/processor_A.json       ← image-derived T-shaped topology placeholder
 ├── processors/processor_B.json       ← seven-qubit heavy-hex-inspired provisional topology
 ├── src/problem.py                    ← scoring + migration logic
 ├── src/processors.py                 ← JSON loading + noise model
@@ -176,7 +176,7 @@ A toy three-qubit Grover run **does not estimate the cost of attacking real RSA 
 
 ## AI assistance disclosure
 
-This project was built with an AI tool. The implementation was executed, checked, and corrected in a clean notebook run before packaging.
+This project was built with an AI tool. AI assistance was used during development. Re-run the tests and notebook after changes; this branch's updates should not be described as independently validated until those checks pass.
 
 ## License
 
@@ -225,7 +225,7 @@ The tests verify that:
 
 - key-establishment assets receive ML-KEM recommendations;
 - signature/authentication assets receive ML-DSA recommendations;
-- TLS certificates can require both key-exchange and certificate-signature migration;
+- TLS certificate signatures are assessed separately from key establishment;
 - every scored asset receives an explainable rationale and deterministic priority rank.
 
 The repository has not received official Challenge Kit processor definitions in the supplied materials. Until those files are provided, the A/B numbers are reproducible **simulator results from clearly labeled placeholder processors**, not hardware measurements.
