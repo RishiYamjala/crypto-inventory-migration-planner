@@ -55,12 +55,12 @@ These values are generated from the result CSVs—not typed in by hand.
 
 | Metric | Processor A | Processor B | B − A |
 |---|---:|---:|---:|
-| Success probability for `101` | `0.593750` | `0.735840` | `0.142090` |
-| Standard error | `0.010853` | `0.009742` | `-0.001110` |
-| Compiled depth | `147` | `56` | `-91` |
-| Counted two-qubit gates | `45` | `24` | `-21` |
-| Estimated SWAP overhead | `7.000000` | `0.000000` | `-7.000000` |
-| Total compiled operations | `231` | `96` | `-135` |
+| Success probability for `101` | `0.593750` | `0.583496` | `-0.010254` |
+| Standard error | `0.010853` | `0.010893` | `0.000041` |
+| Compiled depth | `147` | `175` | `28` |
+| Counted two-qubit gates | `45` | `45` | `0` |
+| Estimated SWAP overhead | `7.000000` | `7.000000` | `0.000000` |
+| Total compiled operations | `231` | `276` | `45` |
 
 **Interpretation:** under this placeholder topology and common noise model, Processor B produced fewer compiled operations and a higher measured success probability. This is evidence for this experiment—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
 
@@ -103,7 +103,7 @@ jupyter nbconvert --to notebook --execute main.ipynb \
 ├── report.md                         ← measured analysis + limitations
 ├── data/raw/inventory.csv            ← sample crypto inventory
 ├── processors/processor_A.json       ← line topology placeholder
-├── processors/processor_B.json       ← connected topology placeholder
+├── processors/processor_B.json       ← seven-qubit heavy-hex-inspired provisional topology
 ├── src/problem.py                    ← scoring + migration logic
 ├── src/processors.py                 ← JSON loading + noise model
 ├── src/routing.py                    ← Grover + transpilation
@@ -155,13 +155,20 @@ The SWAP value is explicitly an **estimate**: extra compiled two-qubit gates div
 - [x] Transpiled circuits and measured metrics
 - [x] A/B comparison, figures, and evidence-based report
 - [x] Limitations and AI assistance disclosure
-- [ ] Replace placeholders with official Challenge Kit values before submission
+- [ ] Replace provisional Processor A/B definitions with official Challenge Kit JSON before submission
+- [x] Online A/B architecture comparison separated from offline C/D Bell-correlation scope
+
+## Online and offline challenge stages
+
+The supplied guideline summary describes the online Phase 1 comparison as **Processor A: five qubits** and **Processor B: seven qubits with a heavy-hex-inspired graph**. The offline shortlisted stage introduces **Processors C and D**, a Bell-correlation study with `XX`, `YY`, and `ZZ` checks, protection strategies, and postselection yield. This repository targets the online P2 deliverable; it does not claim to implement the offline C/D package.
 
 ## Important Challenge Kit note
 
 The Challenge Guide says the **official Challenge Kit is authoritative** for processor definitions, coupling maps, noise assumptions, and PS-specific inputs. The included JSON files are clearly marked `PLACEHOLDER - REPLACE WITH CHALLENGE KIT VALUES`.
 
-Before submission, replace `processors/processor_A.json` and `processors/processor_B.json`, then rerun the notebook. Do not manually edit measured CSVs or report values.
+Processor A remains a five-qubit placeholder, and Processor B is now a seven-qubit heavy-hex-inspired **summary-derived provisional placeholder**. The exact Challenge Kit coupling maps, ports, basis gates, and noise values were not included in the supplied files, so these are not yet official definitions.
+
+Before submission, replace `processors/processor_A.json` and `processors/processor_B.json` with the exact official JSON files, then rerun the notebook. Do not manually edit measured CSVs or report values.
 
 ## Limitations
 

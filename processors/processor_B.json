@@ -1,6 +1,6 @@
 {
   "name": "Processor B",
-  "num_qubits": 5,
+  "num_qubits": 7,
   "coupling_map": [
     [
       0,
@@ -20,11 +20,19 @@
     ],
     [
       4,
-      0
+      5
     ],
     [
-      0,
-      2
+      5,
+      6
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      2,
+      5
     ]
   ],
   "basis_gates": [
@@ -42,5 +50,7 @@
     "cx_depolarizing": 0.01,
     "readout_error": 0.01
   },
-  "note": "PLACEHOLDER - REPLACE WITH CHALLENGE KIT VALUES"
+  "note": "PROVISIONAL SUMMARY-DERIVED PLACEHOLDER - REPLACE WITH OFFICIAL CHALLENGE KIT VALUES",
+  "topology_description": "Seven-qubit heavy-hex-inspired provisional topology from the supplied guideline summary; replace with exact Challenge Kit JSON.",
+  "stage": "Phase 1 online Processor B"
 }
