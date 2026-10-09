@@ -51,20 +51,22 @@
 
 ## Verified run results
 
-These values come from the generated CSVs, not hand-entered claims.
+These values are generated from the result CSVs—not typed in by hand.
 
 | Metric | Processor A | Processor B | B − A |
 |---|---:|---:|---:|
 | Success probability for `101` | `0.593750` | `0.735840` | `0.142090` |
-| Standard error | `0.010853` | `0.009742` | `-0.001111` |
+| Standard error | `0.010853` | `0.009742` | `-0.001110` |
 | Compiled depth | `147` | `56` | `-91` |
 | Counted two-qubit gates | `45` | `24` | `-21` |
 | Estimated SWAP overhead | `7.000000` | `0.000000` | `-7.000000` |
 | Total compiled operations | `231` | `96` | `-135` |
 
-**Interpretation:** in this placeholder-topology experiment, Processor B produced fewer compiled operations and a higher measured success probability. This is evidence for this run—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
+**Interpretation:** under this placeholder topology and common noise model, Processor B produced fewer compiled operations and a higher measured success probability. This is evidence for this experiment—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
 
 Full interpretation: [`report.md`](report.md) · Raw evidence: [`results/tables/`](results/tables/)
+
+---
 
 ## Quick start
 
