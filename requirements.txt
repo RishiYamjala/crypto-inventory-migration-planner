@@ -9,3 +9,4 @@ nbconvert
 
 pylatexenc
 streamlit
+pytest

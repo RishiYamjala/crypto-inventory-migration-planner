@@ -205,3 +205,20 @@ streamlit run app.py
 ## Why the classical and quantum parts belong together
 
 The inventory planner answers: **which cryptographic assets should an organization migrate first, and why?** The Grover experiment answers a different Phase 1 question: **how does processor architecture change execution of the same quantum solution?** The benchmark is included because the challenge requires an A/B architecture comparison; it is not a measurement of an organization's real RSA/ECC attack cost and should never be presented as one.
+
+## Validation before submission
+
+Run the focused migration tests:
+
+```bash
+pytest -q tests/test_problem.py
+```
+
+The tests verify that:
+
+- key-establishment assets receive ML-KEM recommendations;
+- signature/authentication assets receive ML-DSA recommendations;
+- TLS certificates can require both key-exchange and certificate-signature migration;
+- every scored asset receives an explainable rationale and deterministic priority rank.
+
+The repository has not received official Challenge Kit processor definitions in the supplied materials. Until those files are provided, the A/B numbers are reproducible **simulator results from clearly labeled placeholder processors**, not hardware measurements.
