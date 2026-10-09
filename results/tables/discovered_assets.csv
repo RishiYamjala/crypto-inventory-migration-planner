@@ -1,0 +1,3 @@
+asset_name,algorithm,usage,sensitivity,lifespan,evidence_source,evidence_excerpt
+Sample Service Config,RSA-2048,TLS/HTTPS,Medium,1-5 years,sample_service_config.txt,portal certificate_algorithm: RSA-2048 transport: TLS/HTTPS confidentiality_lifetime: 5-
+Sample Service Config,AES-128,TLS/HTTPS,Medium,1-5 years,sample_service_config.txt,ive-store content_encryption: AES-128 usage: Database Encryption

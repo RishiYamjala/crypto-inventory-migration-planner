@@ -13,6 +13,10 @@ SENSITIVITY = {'Low': 5, 'Medium': 12, 'High': 18, 'Critical': 25}
 LIFESPAN = {'Less than 1 year': 0, '1-5 years': 8, '5-10 years': 16, '10+ years': 25}
 PUBLIC_KEY = {'RSA-2048','RSA-3072','ECDH P-256','ECDSA P-256','Ed25519','DH','DSA'}
 LONG_LIVED = {'5-10 years','10+ years'}
+KEY_EXCHANGE = {'RSA-2048', 'RSA-3072', 'ECDH P-256', 'DH'}
+SIGNATURE = {'RSA-2048', 'RSA-3072', 'ECDSA P-256', 'Ed25519', 'DSA'}
+SYMMETRIC = {'AES-128', 'AES-256', '3DES', 'DES', 'RC4', 'ChaCha20'}
+HASHING = {'MD5', 'SHA-1', 'SHA-256', 'SHA-3'}
 
 
 def vulnerability_score(algorithm):
@@ -22,6 +26,33 @@ def vulnerability_score(algorithm):
         if algorithm.startswith(key):
             return value
     raise KeyError(f'Unknown algorithm: {algorithm}')
+
+
+def algorithm_role(algorithm, usage):
+    """Classify the asset's cryptographic role for explainable scoring."""
+    if (algorithm in KEY_EXCHANGE or usage in {'TLS/HTTPS', 'VPN', 'SSH', 'Email'}) and algorithm in PUBLIC_KEY:
+        return 'Key exchange / public-key transport'
+    if (algorithm in SIGNATURE or usage in {'Code Signing', 'Digital Signatures', 'API Tokens/JWT'}) and algorithm in PUBLIC_KEY:
+        return 'Digital signature / authentication'
+    if algorithm in SYMMETRIC:
+        return 'Symmetric encryption'
+    if algorithm in HASHING:
+        return 'Hashing / integrity'
+    return 'Other cryptographic use'
+
+
+def threat_rationale(algorithm, usage, lifespan):
+    """Explain the lookup result without treating every non-PQC asset equally."""
+    if algorithm in KEY_EXCHANGE or algorithm in SIGNATURE:
+        return ('Shor-risk public-key primitive; observed use and confidentiality/signature '
+                f'lifetime are {usage} and {lifespan}.')
+    if algorithm in {'3DES', 'DES', 'RC4', 'MD5', 'SHA-1'}:
+        return 'Legacy or collision/strength-weakened primitive; replacement is recommended independently of quantum risk.'
+    if algorithm == 'AES-128':
+        return 'Symmetric primitive receives a Grover-adjusted score; AES-256 is the recommended upgrade.'
+    if algorithm in {'AES-256', 'ChaCha20', 'SHA-256', 'SHA-3', 'ML-KEM', 'ML-DSA'}:
+        return 'No quantum vulnerability assigned by this lookup table; continue normal lifecycle and implementation review.'
+    return 'No matching rule; validate this asset against the Challenge Kit or organizational policy.'
 
 
 def migration_for(row):
@@ -46,10 +77,17 @@ def score_inventory(input_path='data/raw/inventory.csv', output_dir='results/tab
         hndl = bool(row['algorithm'] in PUBLIC_KEY and row['usage'] in {'TLS/HTTPS','VPN','SSH','Email'} and row['lifespan'] in LONG_LIVED)
         migration, effort = migration_for(row)
         phase = 'Phase 1 (0-6 months)' if level in {'Critical','High'} else 'Phase 2 (6-18 months)' if level == 'Medium' else 'Phase 3 (18-36 months)'
-        rows.append({**row.to_dict(), 'vulnerability_score':vuln, 'risk_score':score, 'risk_level':level, 'HNDL':hndl, 'migration':migration, 'migration_effort':effort, 'phase':phase})
+        rows.append({**row.to_dict(), 'cryptographic_role':algorithm_role(row['algorithm'], row['usage']),
+                     'vulnerability_score':vuln, 'risk_score':score, 'risk_level':level, 'HNDL':hndl,
+                     'risk_rationale':threat_rationale(row['algorithm'], row['usage'], row['lifespan']),
+                     'migration':migration, 'migration_effort':effort, 'phase':phase})
     scored = pd.DataFrame(rows)
+    phase_order = {'Phase 1 (0-6 months)': 1, 'Phase 2 (6-18 months)': 2, 'Phase 3 (18-36 months)': 3}
+    scored['_sort_key'] = scored.apply(lambda r: (phase_order[r['phase']], -int(r['risk_score']), r['asset_name']), axis=1)
+    scored = scored.sort_values('_sort_key').drop(columns='_sort_key').reset_index(drop=True)
+    scored.insert(0, 'priority_rank', range(1, len(scored) + 1))
     out = Path(output_dir); out.mkdir(parents=True, exist_ok=True)
     scored.to_csv(out/'inventory_scored.csv', index=False)
-    plan_cols = ['asset_name','algorithm','usage','risk_level','HNDL','migration','migration_effort','phase']
+    plan_cols = ['priority_rank','asset_name','algorithm','cryptographic_role','usage','risk_level','risk_score','HNDL','risk_rationale','migration','migration_effort','phase']
     scored[plan_cols].to_csv(out/'migration_plan.csv', index=False)
     return scored

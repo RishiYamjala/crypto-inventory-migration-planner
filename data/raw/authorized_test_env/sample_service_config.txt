@@ -1,0 +1,9 @@
+# Synthetic fixture only. No live system is scanned.
+service: customer-portal
+certificate_algorithm: RSA-2048
+transport: TLS/HTTPS
+confidentiality_lifetime: 5-10 years
+
+service: archive-store
+content_encryption: AES-128
+usage: Database Encryption

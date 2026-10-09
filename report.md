@@ -18,6 +18,9 @@ The measured success probabilities for state `101` were 0.593750 ± 0.010853 for
 ## Could gate-set/noise differences also contribute?
 Yes. This run keeps basis gates and the default placeholder noise model identical, but transpilation can produce different gate counts and layouts. If official processor data changes basis gates, ports, calibration, or noise, those factors can contribute and must be reported separately.
 
+## Why both components belong in this project?
+The inventory planner answers which cryptographic assets an organization should migrate first. The Grover experiment answers the separate Phase 1 architecture question: how processor topology changes execution of the same quantum solution. It is not a measurement of the cost of attacking real RSA or ECC implementations.
+
 ## What remains uncertain?
 The processor definitions and noise values are placeholders until Challenge Kit values are supplied. Runtime is environment-dependent. The SWAP value is an estimate rather than a direct decomposition count.
 

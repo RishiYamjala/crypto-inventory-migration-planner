@@ -174,3 +174,34 @@ This project was built with an AI tool. The implementation was executed, checked
 ## License
 
 No license has been selected yet. Add the license required by your team or hackathon before public release.
+
+## Authorized discovery, not unrestricted scanning
+
+The optional `src/discovery.py` module demonstrates a safer next step beyond a static spreadsheet. It scans only a directory explicitly supplied by the user, records the matching source file and evidence excerpt, and never performs network scanning or reads outside that directory.
+
+Run the synthetic demonstration from the notebook, or use it directly:
+
+```python
+from src.discovery import discover_directory
+assets = discover_directory("data/raw/authorized_test_env")
+```
+
+Use this only against infrastructure and files for which you have explicit authorization. The generated evidence table is [`discovered_assets.csv`](results/tables/discovered_assets.csv).
+
+## Optional dashboard
+
+The repository also includes a local Streamlit dashboard with three views:
+
+- **Overview** — total assets, migration-assessment count, Phase 1 count, HNDL flags
+- **Inventory & roadmap** — prioritized assets, role-aware risk rationale, evidence, and next step
+- **Processor A/B** — measured benchmark comparison from the CSV outputs
+
+Launch it with:
+
+```bash
+streamlit run app.py
+```
+
+## Why the classical and quantum parts belong together
+
+The inventory planner answers: **which cryptographic assets should an organization migrate first, and why?** The Grover experiment answers a different Phase 1 question: **how does processor architecture change execution of the same quantum solution?** The benchmark is included because the challenge requires an A/B architecture comparison; it is not a measurement of an organization's real RSA/ECC attack cost and should never be presented as one.
