@@ -7,11 +7,11 @@
       1
     ],
     [
-      1,
+      0,
       2
     ],
     [
-      2,
+      0,
       3
     ],
     [
@@ -34,5 +34,7 @@
     "cx_depolarizing": 0.01,
     "readout_error": 0.01
   },
-  "note": "PLACEHOLDER - REPLACE WITH CHALLENGE KIT VALUES"
+  "topology_description": "Five-qubit fixed baseline T-shaped graph transcribed from the supplied processor-stage image; node labels are assigned deterministically from 0 to 4.",
+  "stage": "Phase 1 online Processor A",
+  "note": "IMAGE-DERIVED TOPOLOGY - exact Challenge Kit basis gates, ports, and noise values still pending"
 }

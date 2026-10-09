@@ -50,7 +50,7 @@
     "cx_depolarizing": 0.01,
     "readout_error": 0.01
   },
-  "note": "PROVISIONAL SUMMARY-DERIVED PLACEHOLDER - REPLACE WITH OFFICIAL CHALLENGE KIT VALUES",
-  "topology_description": "Seven-qubit heavy-hex-inspired provisional topology from the supplied guideline summary; replace with exact Challenge Kit JSON.",
+  "note": "IMAGE-DERIVED TOPOLOGY - exact Challenge Kit basis gates, ports, and noise values still pending",
+  "topology_description": "Seven-qubit heavy-hex-inspired topology transcribed from the supplied processor-stage image; node labels are assigned deterministically from 0 to 6.",
   "stage": "Phase 1 online Processor B"
 }

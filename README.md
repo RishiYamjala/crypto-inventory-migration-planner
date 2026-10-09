@@ -55,12 +55,12 @@ These values are generated from the result CSVs—not typed in by hand.
 
 | Metric | Processor A | Processor B | B − A |
 |---|---:|---:|---:|
-| Success probability for `101` | `0.593750` | `0.583496` | `-0.010254` |
-| Standard error | `0.010853` | `0.010893` | `0.000041` |
-| Compiled depth | `147` | `175` | `28` |
+| Success probability for `101` | `0.583496` | `0.583496` | `0.000000` |
+| Standard error | `0.010893` | `0.010893` | `0.000000` |
+| Compiled depth | `175` | `175` | `0` |
 | Counted two-qubit gates | `45` | `45` | `0` |
 | Estimated SWAP overhead | `7.000000` | `7.000000` | `0.000000` |
-| Total compiled operations | `231` | `276` | `45` |
+| Total compiled operations | `276` | `276` | `0` |
 
 **Interpretation:** under this placeholder topology and common noise model, Processor B produced fewer compiled operations and a higher measured success probability. This is evidence for this experiment—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
 
@@ -164,9 +164,9 @@ The supplied guideline summary describes the online Phase 1 comparison as **Proc
 
 ## Important Challenge Kit note
 
-The Challenge Guide says the **official Challenge Kit is authoritative** for processor definitions, coupling maps, noise assumptions, and PS-specific inputs. The included JSON files are clearly marked `PLACEHOLDER - REPLACE WITH CHALLENGE KIT VALUES`.
+The supplied processor-stage image establishes the online shapes: Processor A is a five-qubit fixed baseline graph, and Processor B is a seven-qubit heavy-hex-inspired graph. The node labels in the JSON files are deterministic transcriptions of the visible graphs. The **official Challenge Kit remains authoritative** for exact coupling directionality, basis gates, ports, noise assumptions, and PS-specific inputs.
 
-Processor A remains a five-qubit placeholder, and Processor B is now a seven-qubit heavy-hex-inspired **summary-derived provisional placeholder**. The exact Challenge Kit coupling maps, ports, basis gates, and noise values were not included in the supplied files, so these are not yet official definitions.
+Processor A and B now use the topologies visible in the supplied image, but their exact Challenge Kit basis gates, ports, noise values, and any hidden edge-direction details were not included in the image. Therefore the current benchmark is **image-derived and simulator-based**, not an official hardware result.
 
 Before submission, replace `processors/processor_A.json` and `processors/processor_B.json` with the exact official JSON files, then rerun the notebook. Do not manually edit measured CSVs or report values.
 
