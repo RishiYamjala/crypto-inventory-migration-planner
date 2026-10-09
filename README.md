@@ -264,3 +264,20 @@ python validate_processors.py
 ```
 
 The committed manifest is intentionally `pending`, so the validator fails until the real Challenge Kit manifest is installed. It then compares every required value and the complete file hash before accepting the configuration. This prevents a user from merely changing a Boolean flag to claim official status.
+
+## Current submission status
+
+| Requirement | Status |
+|---|---|
+| Crypto migration functionality | Implemented and regression-tested |
+| Notebook execution | Verified in a clean kernel |
+| Processor provenance safeguards | Implemented |
+| Official Processor A/B authenticity | **Pending organizer-supplied manifest** |
+| Benchmark using official configurations | **Not established yet** |
+
+The validator separates two claims:
+
+- **Authenticity:** the manifest must come from an authoritative organizer source and identify a version.
+- **Integrity and consistency:** processor files must match the manifest's exact fields and SHA-256 hashes.
+
+A hash created from this repository's own placeholders would prove only self-consistency, not official origin. For that reason, the pending manifest remains blocked until the organizer supplies the source artifact or exact signed/referenceable specification.
