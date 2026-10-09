@@ -243,3 +243,24 @@ python validate_processors.py
 ```
 
 It intentionally fails until the exact organizer-provided files are installed and both flags are changed to `true`. After that, rerun `main.ipynb`, regenerate all result tables/figures/report text, run `pytest -q`, and only then mark the Phase 1 submission ready.
+
+## Authenticity validation
+
+`official_challenge_kit_verified: true` is **not sufficient** for acceptance. The repository now requires an organizer-supplied `processors/challenge_kit_manifest.json` with:
+
+- an authoritative source reference;
+- a configuration version;
+- expected qubit counts;
+- exact coupling maps;
+- exact basis gates;
+- exact ports;
+- exact noise parameters; and
+- a SHA-256 hash for each processor JSON file.
+
+Run:
+
+```bash
+python validate_processors.py
+```
+
+The committed manifest is intentionally `pending`, so the validator fails until the real Challenge Kit manifest is installed. It then compares every required value and the complete file hash before accepting the configuration. This prevents a user from merely changing a Boolean flag to claim official status.
