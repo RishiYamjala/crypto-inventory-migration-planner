@@ -1,0 +1,11 @@
+asset_name,algorithm,usage,risk_level,HNDL,migration,migration_effort,phase
+Customer Portal Certificate,RSA-2048,TLS/HTTPS,Critical,True,ML-KEM-768 (FIPS 203) in hybrid mode,Medium,Phase 1 (0-6 months)
+Employee VPN,ECDH P-256,VPN,Critical,True,ML-KEM-768 (FIPS 203) in hybrid mode,Medium,Phase 1 (0-6 months)
+Mobile App Code Signing,ECDSA P-256,Code Signing,High,False,ML-DSA (FIPS 204); SLH-DSA (FIPS 205) for long-lived firmware,High,Phase 1 (0-6 months)
+Customer Database,AES-256,Database Encryption,Safe,False,No action,None,Phase 3 (18-36 months)
+Legacy Billing System,3DES,Database Encryption,High,False,AES-256-GCM,Low,Phase 1 (0-6 months)
+Internal API Tokens,RSA-2048,API Tokens/JWT,High,False,ML-DSA (FIPS 204); SLH-DSA (FIPS 205) for long-lived firmware,High,Phase 1 (0-6 months)
+Backup Archives,AES-128,Disk/File Encryption,High,False,AES-256,Low,Phase 1 (0-6 months)
+HR Contract Signing,RSA-3072,Digital Signatures,Critical,False,ML-DSA (FIPS 204); SLH-DSA (FIPS 205) for long-lived firmware,High,Phase 1 (0-6 months)
+File Integrity Checker,SHA-1,Hashing/Integrity,Medium,False,SHA-256 or SHA-3,Low,Phase 2 (6-18 months)
+Admin SSH Access,Ed25519,SSH,High,False,No action,None,Phase 1 (0-6 months)

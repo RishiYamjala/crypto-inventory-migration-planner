@@ -1,0 +1,10 @@
+qiskit
+qiskit-aer
+numpy
+pandas
+matplotlib
+networkx
+nbformat
+nbconvert
+
+pylatexenc

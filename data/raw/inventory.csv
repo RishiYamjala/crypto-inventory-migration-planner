@@ -1,0 +1,11 @@
+asset_name,algorithm,usage,sensitivity,lifespan
+Customer Portal Certificate,RSA-2048,TLS/HTTPS,High,5-10 years
+Employee VPN,ECDH P-256,VPN,High,5-10 years
+Mobile App Code Signing,ECDSA P-256,Code Signing,Medium,5-10 years
+Customer Database,AES-256,Database Encryption,Critical,10+ years
+Legacy Billing System,3DES,Database Encryption,High,5-10 years
+Internal API Tokens,RSA-2048,API Tokens/JWT,Medium,Less than 1 year
+Backup Archives,AES-128,Disk/File Encryption,Critical,10+ years
+HR Contract Signing,RSA-3072,Digital Signatures,High,10+ years
+File Integrity Checker,SHA-1,Hashing/Integrity,Low,1-5 years
+Admin SSH Access,Ed25519,SSH,High,Less than 1 year

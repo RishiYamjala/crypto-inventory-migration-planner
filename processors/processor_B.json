@@ -1,0 +1,46 @@
+{
+  "name": "Processor B",
+  "num_qubits": 5,
+  "coupling_map": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      4,
+      0
+    ],
+    [
+      0,
+      2
+    ]
+  ],
+  "basis_gates": [
+    "rz",
+    "sx",
+    "x",
+    "cx"
+  ],
+  "ports": {
+    "readout": "standard",
+    "control": "standard"
+  },
+  "noise": {
+    "one_qubit_depolarizing": 0.001,
+    "cx_depolarizing": 0.01,
+    "readout_error": 0.01
+  },
+  "note": "PLACEHOLDER - REPLACE WITH CHALLENGE KIT VALUES"
+}
