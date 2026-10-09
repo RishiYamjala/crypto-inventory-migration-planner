@@ -28,12 +28,17 @@ def vulnerability_score(algorithm):
     raise KeyError(f'Unknown algorithm: {algorithm}')
 
 
-def algorithm_role(algorithm, usage):
-    """Classify the asset's cryptographic role for explainable scoring."""
-    if (algorithm in KEY_EXCHANGE or usage in {'TLS/HTTPS', 'VPN', 'SSH', 'Email'}) and algorithm in PUBLIC_KEY:
-        return 'Key exchange / public-key transport'
-    if (algorithm in SIGNATURE or usage in {'Code Signing', 'Digital Signatures', 'API Tokens/JWT'}) and algorithm in PUBLIC_KEY:
+def algorithm_role(algorithm, usage, asset_name=''):
+    """Classify the best-supported role without inferring roles from usage alone."""
+    name = str(asset_name).lower()
+    if usage == 'TLS/HTTPS' and 'certificate' in name and algorithm in SIGNATURE:
+        return 'Certificate digital signature'
+    if algorithm in KEY_EXCHANGE:
+        return 'Key establishment / key exchange'
+    if algorithm in SIGNATURE and usage in {'Code Signing', 'Digital Signatures', 'API Tokens/JWT', 'SSH'}:
         return 'Digital signature / authentication'
+    if algorithm in SIGNATURE and usage == 'TLS/HTTPS':
+        return 'Public-key role needs inventory evidence'
     if algorithm in SYMMETRIC:
         return 'Symmetric encryption'
     if algorithm in HASHING:
@@ -45,7 +50,7 @@ def threat_rationale(algorithm, usage, lifespan):
     """Explain the lookup result without treating every non-PQC asset equally."""
     if algorithm in KEY_EXCHANGE or algorithm in SIGNATURE:
         return ('Shor-risk public-key primitive; observed use and confidentiality/signature '
-                f'lifetime are {usage} and {lifespan}.')
+                f'lifetime are {usage} and {lifespan}. Confirm the asset role before migration.')
     if algorithm in {'3DES', 'DES', 'RC4', 'MD5', 'SHA-1'}:
         return 'Legacy or collision/strength-weakened primitive; replacement is recommended independently of quantum risk.'
     if algorithm == 'AES-128':
@@ -57,18 +62,24 @@ def threat_rationale(algorithm, usage, lifespan):
 
 def migration_for(row):
     alg, usage = row['algorithm'], row['usage']
-    if alg in {'RSA-2048', 'RSA-3072'} and usage == 'TLS/HTTPS' and 'certificate' in row['asset_name'].lower():
-        return 'ML-KEM-768 (FIPS 203) hybrid key exchange + ML-DSA (FIPS 204) certificate signatures', 'High'
+    asset_name = str(row['asset_name']).lower()
+    is_tls_certificate = usage == 'TLS/HTTPS' and 'certificate' in asset_name
+
+    # A certificate's public-key algorithm here describes its signature role;
+    # do not infer that it also describes the TLS key-establishment mechanism.
+    if is_tls_certificate and alg in SIGNATURE:
+        return ('ML-DSA (FIPS 204) for certificate signatures; assess ML-KEM '
+                'separately for TLS key establishment', 'High')
     if alg in {'RSA-2048','RSA-3072','ECDH P-256','DH'} and usage in {'TLS/HTTPS','VPN','SSH','Email'}:
-        return 'ML-KEM-768 (FIPS 203) in hybrid mode', 'Medium'
+        return 'ML-KEM-768 (FIPS 203) in an appropriately designed hybrid key-establishment deployment', 'High' if usage == 'TLS/HTTPS' else 'Medium'
     if alg in {'RSA-2048','RSA-3072','ECDSA P-256','Ed25519','DSA'} and usage in {'Code Signing','Digital Signatures','API Tokens/JWT'}:
-        return 'ML-DSA (FIPS 204); SLH-DSA (FIPS 205) for long-lived firmware', 'High'
+        return 'ML-DSA (FIPS 204); consider SLH-DSA (FIPS 205) for long-lived firmware or applicable policy needs', 'High'
     if alg in {'ECDSA P-256', 'Ed25519'} and usage == 'SSH':
-        return 'ML-DSA (FIPS 204) for authentication/signatures; assess ML-KEM for key exchange', 'High'
+        return 'ML-DSA (FIPS 204) for SSH authentication/signatures; assess key establishment separately', 'High'
     if alg == 'AES-128': return 'AES-256', 'Low'
     if alg in {'3DES','DES','RC4'}: return 'AES-256-GCM', 'Low'
     if alg in {'MD5','SHA-1'}: return 'SHA-256 or SHA-3', 'Low'
-    return 'No action', 'None'
+    return 'Review role and usage; no automatic migration recommendation', 'Review'
 
 
 def score_inventory(input_path='data/raw/inventory.csv', output_dir='results/tables'):
@@ -81,7 +92,7 @@ def score_inventory(input_path='data/raw/inventory.csv', output_dir='results/tab
         hndl = bool(row['algorithm'] in PUBLIC_KEY and row['usage'] in {'TLS/HTTPS','VPN','SSH','Email'} and row['lifespan'] in LONG_LIVED)
         migration, effort = migration_for(row)
         phase = 'Phase 1 (0-6 months)' if level in {'Critical','High'} else 'Phase 2 (6-18 months)' if level == 'Medium' else 'Phase 3 (18-36 months)'
-        rows.append({**row.to_dict(), 'cryptographic_role':algorithm_role(row['algorithm'], row['usage']),
+        rows.append({**row.to_dict(), 'cryptographic_role':algorithm_role(row['algorithm'], row['usage'], row['asset_name']),
                      'vulnerability_score':vuln, 'risk_score':score, 'risk_level':level, 'HNDL':hndl,
                      'risk_rationale':threat_rationale(row['algorithm'], row['usage'], row['lifespan']),
                      'migration':migration, 'migration_effort':effort, 'phase':phase})
