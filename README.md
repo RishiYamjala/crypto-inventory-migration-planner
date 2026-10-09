@@ -229,3 +229,17 @@ The tests verify that:
 - every scored asset receives an explainable rationale and deterministic priority rank.
 
 The repository has not received official Challenge Kit processor definitions in the supplied materials. Until those files are provided, the A/B numbers are reproducible **simulator results from clearly labeled placeholder processors**, not hardware measurements.
+
+## Official-configuration gate
+
+Public-source checking did not locate the organizer's exact Processor A/B JSON files or edge lists. The IBM Qiskit Fall Fest announcement is a general event page and does not publish these processor parameters; public GitHub searches also found no matching Challenge Kit artifact.
+
+The supplied image is therefore recorded as a **topology reference only**. It supports the five-versus-seven-qubit distinction and the broad graph shapes, but it does not verify node labels, directed edges, basis gates, ports, compiler baseline, or noise parameters. The JSON files now include `official_challenge_kit_verified: false` and must not be presented as official configurations.
+
+Run the gate with:
+
+```bash
+python validate_processors.py
+```
+
+It intentionally fails until the exact organizer-provided files are installed and both flags are changed to `true`. After that, rerun `main.ipynb`, regenerate all result tables/figures/report text, run `pytest -q`, and only then mark the Phase 1 submission ready.

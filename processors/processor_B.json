@@ -52,5 +52,7 @@
   },
   "note": "IMAGE-DERIVED TOPOLOGY - exact Challenge Kit basis gates, ports, and noise values still pending",
   "topology_description": "Seven-qubit heavy-hex-inspired topology transcribed from the supplied processor-stage image; node labels are assigned deterministically from 0 to 6.",
-  "stage": "Phase 1 online Processor B"
+  "stage": "Phase 1 online Processor B",
+  "source": "user-supplied processor-stage image; not an official JSON edge list",
+  "official_challenge_kit_verified": false
 }

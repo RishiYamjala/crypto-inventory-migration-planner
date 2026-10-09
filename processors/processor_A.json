@@ -36,5 +36,7 @@
   },
   "topology_description": "Five-qubit fixed baseline T-shaped graph transcribed from the supplied processor-stage image; node labels are assigned deterministically from 0 to 4.",
   "stage": "Phase 1 online Processor A",
+  "source": "user-supplied processor-stage image; not an official JSON edge list",
+  "official_challenge_kit_verified": false,
   "note": "IMAGE-DERIVED TOPOLOGY - exact Challenge Kit basis gates, ports, and noise values still pending"
 }
