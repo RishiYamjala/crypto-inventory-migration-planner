@@ -296,3 +296,5 @@ python check_phase1_submission.py
 ```
 
 The official Drive folder also contains the participant instructions and starter guide, preserved here as [`QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf`](docs/QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf) and [`Challenge_Guide_Phase_1.pdf`](docs/Challenge_Guide_Phase_1.pdf). The starter guide's processor JSON on page 15 is explicitly illustrative and says to replace every value with the exact organizer-supplied definition. See [`docs/PROCESSOR_CONFIG_STATUS.md`](docs/PROCESSOR_CONFIG_STATUS.md) for the source-by-source finding.
+
+The uploaded applicant communications clarify the intended scope: there is no downloadable dataset, Challenge Kit, or Processor A/B/C JSON; participants are expected to research and simulate the published processor topologies. Accordingly, this repository presents its A/B models as **research simulations**, not hidden official configurations. The exact topology assumptions and limitations remain documented rather than silently asserted as fact.

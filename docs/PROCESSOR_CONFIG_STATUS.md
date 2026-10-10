@@ -36,3 +36,15 @@ The same section says to replace every illustrative value with the exact organiz
 The repository confirms the online A/B requirements and records the visible 5-qubit/7-qubit stage information, but its local processor JSONs remain **unverified image-derived references**. `processors/challenge_kit_manifest.json` remains pending, and `python validate_processors.py` must continue to fail until the organizer supplies the actual definitions or an authenticated manifest.
 
 Do not generate hashes from the current local JSONs and call them official. That would prove only local integrity, not organizer authenticity.
+
+## Applicant archive finding
+
+The uploaded `Applicants(QiskitFallFest2026).zip` contains only `chat.md` and `chat.txt`. It contains no JSON, ZIP, CSV, or configuration files. Its repeated hackathon announcement says:
+
+> There is NO dataset or challenge kit to download.
+>
+> There is NO Processor A/B/C JSON file to download.
+>
+> Processor A and B topologies are for you to research and simulate — that IS the challenge.
+
+This explains why the shared Drive has no exact processor files. The repository's models should therefore be described as **research simulations derived from the published architecture descriptions**, not as reconstructions of hidden official JSON files. The authenticity gate remains useful for preventing an unverified research model from being mislabeled as an official configuration, but the absence of a manifest is an organizer-scope finding rather than an incomplete download on this machine.
