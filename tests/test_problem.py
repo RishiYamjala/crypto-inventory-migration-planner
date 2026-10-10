@@ -31,6 +31,25 @@ def test_tls_certificate_covers_both_roles():
     assert effort == "High"
 
 
+def test_rsa_tls_role_review_does_not_depend_on_asset_name():
+    from src.problem import algorithm_role
+
+    for asset_name in ["Web Server", "Customer Portal", "TLS Certificate"]:
+        item = row(asset_name, "RSA-2048", "TLS/HTTPS")
+        recommendation, effort = migration_for(item)
+        role = algorithm_role(item["algorithm"], item["usage"])
+        assert "Review RSA role" in recommendation
+        assert "ML-KEM" in recommendation and "ML-DSA" in recommendation
+        assert effort == "High"
+        assert "role review required" in role
+
+
+def test_rsa_tls_does_not_return_no_action_for_non_certificate_name():
+    recommendation, effort = migration_for(row("Web Server", "RSA-3072", "TLS/HTTPS"))
+    assert recommendation != "No action"
+    assert effort != "None"
+
+
 def test_scored_inventory_contains_explainable_priority_fields(tmp_path):
     df = score_inventory("data/raw/inventory.csv", tmp_path)
     assert len(df) == 10

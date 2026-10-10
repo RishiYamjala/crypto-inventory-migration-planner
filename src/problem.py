@@ -70,8 +70,9 @@ def threat_rationale(algorithm, usage, lifespan):
 
 def migration_for(row):
     alg, usage = row['algorithm'], row['usage']
-    if alg in {'RSA-2048', 'RSA-3072'} and usage == 'TLS/HTTPS' and 'certificate' in row['asset_name'].lower():
-        return 'ML-KEM-768 (FIPS 203) hybrid key exchange + ML-DSA (FIPS 204) certificate signatures', 'High'
+    if alg in {'RSA-2048', 'RSA-3072'} and usage == 'TLS/HTTPS':
+        return ('Review RSA role: ML-KEM-768 (FIPS 203) for key establishment and '
+                'ML-DSA (FIPS 204) for certificate signatures; confirm actual TLS usage', 'High')
     if alg in {'ECDH P-256','DH'} and usage in {'TLS/HTTPS','VPN','SSH','Email'}:
         return 'ML-KEM-768 (FIPS 203) in hybrid mode', 'Medium'
     if alg in {'RSA-2048','RSA-3072'} and usage in {'VPN','SSH','Email'}:

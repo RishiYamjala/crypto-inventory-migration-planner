@@ -128,6 +128,8 @@ jupyter nbconvert --to notebook --execute main.ipynb \
 
 The SWAP value is explicitly an **estimate**: extra compiled two-qubit gates divided by three.
 
+The image-derived coupling maps are passed to Qiskit as **directed pairs exactly as listed**; edge directionality is not verified by the supplied image and no reverse edges are fabricated. The Aer noise model is also a simplified research assumption: one-qubit depolarizing noise applies to listed non-two-qubit basis operations, CX-family depolarizing noise applies to listed two-qubit basis operations, and the readout error applies to measurements. These values are not official calibration data.
+
 ## Outputs
 
 ### Tables

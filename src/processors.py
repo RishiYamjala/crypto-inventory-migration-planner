@@ -1,4 +1,12 @@
-"""Processor JSON loading and common benchmark noise."""
+"""Processor loading and explicitly simplified benchmark noise.
+
+The configured one-qubit depolarizing error is attached to every non-two-qubit
+basis operation listed in ``basis_gates``; the configured CX depolarizing error
+is attached only to listed two-qubit basis operations (currently ``cx``, ``cz``,
+``ecr`` or ``swap``); readout error is attached to all measurements. These are
+Aer simulation assumptions from the research JSONs, not measured calibration
+data or official Challenge Kit noise parameters.
+"""
 import json
 from pathlib import Path
 from qiskit_aer.noise import NoiseModel, depolarizing_error, ReadoutError

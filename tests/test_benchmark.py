@@ -18,7 +18,11 @@ def test_processor_maps_can_change_transpilation_metrics():
     circuit.cx(0, 2)
     compiled_a = transpile_for_processor(circuit, a)
     compiled_b = transpile_for_processor(circuit, b)
+    repeat_a = transpile_for_processor(circuit, a)
+    repeat_b = transpile_for_processor(circuit, b)
     assert a["coupling_map"] != b["coupling_map"]
+    assert (compiled_a.depth(), _two_qubit_count(compiled_a)) == (repeat_a.depth(), _two_qubit_count(repeat_a))
+    assert (compiled_b.depth(), _two_qubit_count(compiled_b)) == (repeat_b.depth(), _two_qubit_count(repeat_b))
     assert (compiled_a.depth(), _two_qubit_count(compiled_a)) != (compiled_b.depth(), _two_qubit_count(compiled_b))
 
 
