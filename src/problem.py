@@ -30,10 +30,18 @@ def vulnerability_score(algorithm):
 
 def algorithm_role(algorithm, usage):
     """Classify the asset's cryptographic role for explainable scoring."""
-    if (algorithm in KEY_EXCHANGE or usage in {'TLS/HTTPS', 'VPN', 'SSH', 'Email'}) and algorithm in PUBLIC_KEY:
+    if algorithm in KEY_EXCHANGE and algorithm not in {'RSA-2048', 'RSA-3072'}:
         return 'Key exchange / public-key transport'
-    if (algorithm in SIGNATURE or usage in {'Code Signing', 'Digital Signatures', 'API Tokens/JWT'}) and algorithm in PUBLIC_KEY:
+    if algorithm in {'RSA-2048', 'RSA-3072'}:
+        if usage == 'TLS/HTTPS':
+            return 'Certificate signature plus possible key transport; role review required'
+        if usage in {'Code Signing', 'Digital Signatures', 'API Tokens/JWT'}:
+            return 'Digital signature / authentication'
+        return 'Public-key use; cryptographic role requires confirmation'
+    if algorithm in SIGNATURE or usage in {'Code Signing', 'Digital Signatures', 'API Tokens/JWT'}:
         return 'Digital signature / authentication'
+    if algorithm in PUBLIC_KEY:
+        return 'Public-key use; cryptographic role requires confirmation'
     if algorithm in SYMMETRIC:
         return 'Symmetric encryption'
     if algorithm in HASHING:
@@ -43,9 +51,14 @@ def algorithm_role(algorithm, usage):
 
 def threat_rationale(algorithm, usage, lifespan):
     """Explain the lookup result without treating every non-PQC asset equally."""
-    if algorithm in KEY_EXCHANGE or algorithm in SIGNATURE:
+    if algorithm in {'ECDH P-256', 'DH'}:
         return ('Shor-risk public-key primitive; observed use and confidentiality/signature '
                 f'lifetime are {usage} and {lifespan}.')
+    if algorithm in {'RSA-2048', 'RSA-3072'}:
+        return ('RSA is a dual-use public-key primitive; this inventory does not prove whether '
+                f'{usage} uses it for key transport or signatures. Confirm the role before selecting ML-KEM or ML-DSA.')
+    if algorithm in {'ECDSA P-256', 'Ed25519', 'DSA'}:
+        return f'Shor-risk signature/authentication primitive; observed use and asset lifetime are {usage} and {lifespan}.'
     if algorithm in {'3DES', 'DES', 'RC4', 'MD5', 'SHA-1'}:
         return 'Legacy or collision/strength-weakened primitive; replacement is recommended independently of quantum risk.'
     if algorithm == 'AES-128':
@@ -59,8 +72,10 @@ def migration_for(row):
     alg, usage = row['algorithm'], row['usage']
     if alg in {'RSA-2048', 'RSA-3072'} and usage == 'TLS/HTTPS' and 'certificate' in row['asset_name'].lower():
         return 'ML-KEM-768 (FIPS 203) hybrid key exchange + ML-DSA (FIPS 204) certificate signatures', 'High'
-    if alg in {'RSA-2048','RSA-3072','ECDH P-256','DH'} and usage in {'TLS/HTTPS','VPN','SSH','Email'}:
+    if alg in {'ECDH P-256','DH'} and usage in {'TLS/HTTPS','VPN','SSH','Email'}:
         return 'ML-KEM-768 (FIPS 203) in hybrid mode', 'Medium'
+    if alg in {'RSA-2048','RSA-3072'} and usage in {'VPN','SSH','Email'}:
+        return 'Confirm RSA role: ML-KEM for key establishment or ML-DSA for signatures', 'High'
     if alg in {'RSA-2048','RSA-3072','ECDSA P-256','Ed25519','DSA'} and usage in {'Code Signing','Digital Signatures','API Tokens/JWT'}:
         return 'ML-DSA (FIPS 204); SLH-DSA (FIPS 205) for long-lived firmware', 'High'
     if alg in {'ECDSA P-256', 'Ed25519'} and usage == 'SSH':

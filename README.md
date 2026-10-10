@@ -60,9 +60,10 @@ These values are generated from the result CSVs—not typed in by hand.
 | Compiled depth | `175` | `175` | `0` |
 | Counted two-qubit gates | `45` | `45` | `0` |
 | Estimated SWAP overhead | `7.000000` | `7.000000` | `0.000000` |
+| Measured SWAP instructions | `0` | `0` | `0` |
 | Total compiled operations | `276` | `276` | `0` |
 
-**Interpretation:** under this placeholder topology and common noise model, Processor B produced fewer compiled operations and a higher measured success probability. This is evidence for this experiment—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
+**Interpretation:** Processor A and Processor B produced identical measured metrics for this fixed three-qubit Grover workload; this is a workload-specific result, not evidence that their topologies are identical. This is evidence for this experiment—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
 
 Full interpretation: [`report.md`](report.md) · Raw evidence: [`results/tables/`](results/tables/)
 
@@ -298,3 +299,16 @@ python check_phase1_submission.py
 The official Drive folder also contains the participant instructions and starter guide, preserved here as [`QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf`](docs/QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf) and [`Challenge_Guide_Phase_1.pdf`](docs/Challenge_Guide_Phase_1.pdf). The starter guide's processor JSON on page 15 is explicitly illustrative and says to replace every value with the exact organizer-supplied definition. See [`docs/PROCESSOR_CONFIG_STATUS.md`](docs/PROCESSOR_CONFIG_STATUS.md) for the source-by-source finding.
 
 The uploaded applicant communications clarify the intended scope: there is no downloadable dataset, Challenge Kit, or Processor A/B/C JSON; participants are expected to research and simulate the published processor topologies. Accordingly, this repository presents its A/B models as **research simulations**, not hidden official configurations. The exact topology assumptions and limitations remain documented rather than silently asserted as fact.
+
+## Final technical audit
+
+The benchmark audit now includes regression coverage for topology-sensitive transpilation, processor-driven noise construction, explicit measured SWAP counting, and ambiguous RSA role handling. The current three-qubit Grover workload still produces identical A/B architecture metrics under the fixed seed and optimizer; the report explains this as workload-specific, while the topology regression test demonstrates that the coupling maps do affect other circuits.
+
+Clean-environment validation completed with:
+
+```text
+8 passed
+notebook execution passed
+online artifact checklist passed
+official processor authenticity gate intentionally blocked
+```

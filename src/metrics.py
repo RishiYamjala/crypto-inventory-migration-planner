@@ -10,13 +10,17 @@ SEED = 42
 
 
 def _two_qubit_count(circuit):
-    return sum(1 for inst, qargs, _ in circuit.data if inst.name in {'cx','cz','ecr','swap'} and len(qargs) == 2)
+    return sum(1 for instruction in circuit.data if instruction.operation.name in {'cx','cz','ecr','swap'} and len(instruction.qubits) == 2)
+
+
+def _measured_swap_count(circuit):
+    return sum(1 for instruction in circuit.data if instruction.operation.name == 'swap' and len(instruction.qubits) == 2)
 
 
 def _physical_qubits_used(circuit):
     used = set()
-    for _, qargs, _ in circuit.data:
-        used.update(circuit.find_bit(q).index for q in qargs)
+    for instruction in circuit.data:
+        used.update(circuit.find_bit(q).index for q in instruction.qubits)
     return len(used)
 
 
@@ -42,7 +46,7 @@ def run_processor_benchmark(logical_circuit, processor, marked='101'):
     row = {
         'processor': processor['name'], 'success_probability':p,
         'std_error':math.sqrt(p*(1-p)/SHOTS), 'depth':compiled.depth(),
-        'two_qubit_gates':compiled_2q, 'swap_estimate':extra_2q/3,
+        'two_qubit_gates':compiled_2q, 'measured_swap_count':_measured_swap_count(compiled), 'swap_estimate':extra_2q/3,
         'physical_qubits_used':_physical_qubits_used(compiled), 'total_ops':sum(compiled.count_ops().values()),
         'runtime_seconds':elapsed, 'shots':SHOTS, 'seed':SEED, 'ideal_success_probability':ideal_p,
         'baseline_two_qubit_gates':baseline_2q, 'extra_two_qubit_gates':extra_2q,
@@ -51,7 +55,7 @@ def run_processor_benchmark(logical_circuit, processor, marked='101'):
 
 
 def compare_metrics(a, b):
-    fields = ['success_probability','std_error','depth','two_qubit_gates','swap_estimate','physical_qubits_used','total_ops','runtime_seconds','shots','seed','ideal_success_probability','baseline_two_qubit_gates','extra_two_qubit_gates']
+    fields = ['success_probability','std_error','depth','two_qubit_gates','measured_swap_count','swap_estimate','physical_qubits_used','total_ops','runtime_seconds','shots','seed','ideal_success_probability','baseline_two_qubit_gates','extra_two_qubit_gates']
     rows = []
     for field in fields:
         av, bv = a[field], b[field]

@@ -7,13 +7,13 @@ The inventory was scored with the specified lookup tables, and each asset receiv
 Processor A uses coupling edges [[0, 1], [0, 2], [0, 3], [3, 4]]; Processor B uses coupling edges [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [1, 4], [2, 5]]. The basis gates and noise parameters were held constant.
 
 ## Did transpilation add routing?
-Using the all-to-all baseline, Processor A compiled to 45 counted two-qubit gates versus 24 baseline, for an estimated SWAP overhead of 7.000000. Processor B compiled to 45 versus 24 baseline, for an estimated SWAP overhead of 7.000000. This is an estimate because it divides extra two-qubit gates by three.
+Using the all-to-all baseline, Processor A compiled to 45 counted two-qubit gates versus 24 baseline, for an estimated SWAP overhead of 7.000000; explicit measured SWAP instructions were 0. Processor B compiled to 45 versus 24 baseline, for an estimated SWAP overhead of 7.000000; explicit measured SWAP instructions were 0. This distinguishes direct SWAP instructions from the estimate extra two-qubit gates divided by three.
 
 ## How many extra operations?
 The total compiled operation counts were 276 for Processor A and 276 for Processor B; extra two-qubit counts versus baseline were 21 and 21.
 
 ## Did the problem metric change?
-The measured success probabilities for state `101` were 0.583496 ± 0.010893 for Processor A and 0.583496 ± 0.010893 for Processor B. The difference (B − A) was 0.000000. Ideal reference probabilities were 0.952637 and 0.952637.
+For this three-qubit Grover circuit, the fixed seed and optimizer selected equivalent routing metrics on the two research graphs; that is a legitimate result for this workload, not evidence that the graphs are identical. A topology-sensitive regression circuit is tested separately. The measured success probabilities for state `101` were 0.583496 ± 0.010893 for Processor A and 0.583496 ± 0.010893 for Processor B. The difference (B − A) was 0.000000. Ideal reference probabilities were 0.952637 and 0.952637.
 
 ## Could gate-set/noise differences also contribute?
 Yes. This run keeps basis gates and the default placeholder noise model identical, but transpilation can produce different gate counts and layouts. If official processor data changes basis gates, ports, calibration, or noise, those factors can contribute and must be reported separately.
