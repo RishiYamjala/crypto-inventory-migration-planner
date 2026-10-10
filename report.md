@@ -1,7 +1,7 @@
 # P2 Report — Crypto Inventory & Migration Planner
 
 ## What changed?
-The inventory was scored with the specified lookup tables, and each asset received a migration recommendation and phase. The same marked-state Grover circuit was compiled and executed on both placeholder processor definitions.
+The inventory was scored with the specified lookup tables, and each asset received a migration recommendation and phase. The same marked-state Grover circuit was compiled and executed on both image-derived, provisional processor definitions. The attached guideline confirms the online A/B stage and required measurements, but does not publish exact JSON edge lists, basis gates, ports, or noise values.
 
 ## Which architectural property changed?
 Processor A uses coupling edges [[0, 1], [0, 2], [0, 3], [3, 4]]; Processor B uses coupling edges [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [1, 4], [2, 5]]. The basis gates and noise parameters were held constant.
@@ -22,7 +22,7 @@ Yes. This run keeps basis gates and the default placeholder noise model identica
 The inventory planner answers which cryptographic assets an organization should migrate first. The Grover experiment answers the separate Phase 1 architecture question: how processor topology changes execution of the same quantum solution. It is not a measurement of the cost of attacking real RSA or ECC implementations.
 
 ## What remains uncertain?
-The processor definitions and noise values are placeholders until Challenge Kit values are supplied. Runtime is environment-dependent. The SWAP value is an estimate rather than a direct decomposition count.
+The attached guideline confirms Processor A (5 qubits) and Processor B (7 qubits) for the online stage, but exact Challenge Kit edge lists, basis gates, ports, and noise values are not present in the PDF. The current processor files are therefore image-derived and provisional until organizer-authenticated definitions are supplied. Runtime is environment-dependent. The SWAP value is an estimate rather than a direct decomposition count.
 
 ## Limitations
 A toy three-qubit Grover run does not estimate the cost of attacking real RSA/ECC keys. It is an educational architecture comparison, not a cryptanalytic forecast.

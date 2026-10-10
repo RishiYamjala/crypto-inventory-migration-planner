@@ -281,3 +281,18 @@ The validator separates two claims:
 - **Integrity and consistency:** processor files must match the manifest's exact fields and SHA-256 hashes.
 
 A hash created from this repository's own placeholders would prove only self-consistency, not official origin. For that reason, the pending manifest remains blocked until the organizer supplies the source artifact or exact signed/referenceable specification.
+
+## Official guideline alignment
+
+The supplied [`QFF_IBM_Hackathon_Guideline.pdf`](docs/QFF_IBM_Hackathon_Guideline.pdf) confirms that Phase 1 is an online A/B comparison: Processor A has 5 qubits, Processor B has 7 qubits, and teams must report solution quality, circuit cost, routing/SWAP overhead, physical qubits, noise assumptions, reproducibility, graphs, circuits, and scientific interpretation. The repository includes those artifacts.
+
+The PDF does **not** include the exact Processor A/B JSON definitions or complete edge lists. It therefore confirms the benchmark *requirements*, not the authenticity of the current processor parameters. See [`docs/PHASE1_COMPLIANCE.md`](docs/PHASE1_COMPLIANCE.md) for the evidence map and the pending official-configuration gate.
+
+
+Run the online artifact checklist with:
+
+```bash
+python check_phase1_submission.py
+```
+
+The official Drive folder also contains the participant instructions and starter guide, preserved here as [`QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf`](docs/QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf) and [`Challenge_Guide_Phase_1.pdf`](docs/Challenge_Guide_Phase_1.pdf). The starter guide's processor JSON on page 15 is explicitly illustrative and says to replace every value with the exact organizer-supplied definition. See [`docs/PROCESSOR_CONFIG_STATUS.md`](docs/PROCESSOR_CONFIG_STATUS.md) for the source-by-source finding.
