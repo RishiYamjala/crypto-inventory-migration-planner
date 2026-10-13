@@ -65,6 +65,18 @@ These values are generated from the result CSVs—not typed in by hand.
 
 **Interpretation:** Processor A and Processor B produced identical measured metrics for this fixed three-qubit Grover workload; this is a workload-specific result, not evidence that their topologies are identical. This is evidence for this experiment—not a universal claim that more connectivity is always better. Gate sets, placement, routing, noise, calibration, and compiler choices can all contribute.
 
+### Supplementary topology stress test
+
+The same processor models were also tested with synthetic star, chain, and ring interaction patterns. These results are generated from the benchmark code and are workload-specific; they do not replace the Grover result above.
+
+| Workload | A depth | B depth | A two-qubit gates | B two-qubit gates | A estimated SWAP-equivalents | B estimated SWAP-equivalents |
+|---|---:|---:|---:|---:|---:|---:|
+| Star | 4 | 16 | 4 | 4 | 0.000 | 0.000 |
+| Chain | 26 | 26 | 8 | 8 | 1.000 | 1.000 |
+| Ring | 42 | 26 | 12 | 9 | 2.000 | 1.000 |
+
+In this run, the star workload has lower compiled depth on A, the ring workload has lower depth and fewer two-qubit gates on B, and chain metrics match. This shows that topology effects depend on the workload; it does not establish universal processor superiority. The SWAP-equivalent measure is a proxy rather than a direct count of SWAP instructions.
+
 Full interpretation: [`report.md`](report.md) · Raw evidence: [`results/tables/`](results/tables/)
 
 ---
