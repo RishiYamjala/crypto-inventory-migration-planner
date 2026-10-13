@@ -24,5 +24,19 @@ The inventory planner answers which cryptographic assets an organization should 
 ## What remains uncertain?
 The latest organizer clarification confirms Processor A (5 qubits) and Processor B (9 qubits) for the online stage, while exact official edge lists, basis gates, ports, and noise values are not supplied. The current processor files are therefore participant-defined and provisional until any organizer-authenticated definitions or benchmark settings are supplied. Runtime is environment-dependent. The SWAP value is an estimate rather than a direct decomposition count.
 
+## Supplementary topology stress test
+
+The required three-qubit Grover benchmark produced identical A/B metrics in the committed run. Supplementary synthetic circuits show that topology effects can depend on the interaction pattern:
+
+| Workload | A depth | B depth | A two-qubit gates | B two-qubit gates | A estimated SWAP-equivalents | B estimated SWAP-equivalents |
+|---|---:|---:|---:|---:|---:|---:|
+| Star | 4 | 16 | 4 | 4 | 0.000 | 0.000 |
+| Chain | 26 | 26 | 8 | 8 | 1.000 | 1.000 |
+| Ring | 42 | 26 | 12 | 9 | 2.000 | 1.000 |
+
+The star workload compiles to lower depth on A, while the ring workload compiles to lower depth and fewer two-qubit gates on B; chain metrics match in this run. This supports a workload-specific interpretation rather than forcing the main Grover values to differ. The estimated SWAP-equivalent value is extra two-qubit gates over an all-to-all baseline divided by three; it is a proxy, not a direct SWAP-instruction count. These are supplementary compiler/simulator results using participant-defined models, not official hardware measurements.
+
+Run `python -m src.architecture_stress` to regenerate the supplementary CSV. The notebook now reruns this stress suite and includes the results in the generated report.
+
 ## Limitations
 A toy three-qubit Grover run does not estimate the cost of attacking real RSA/ECC keys. It is an educational architecture comparison, not a cryptanalytic forecast.
