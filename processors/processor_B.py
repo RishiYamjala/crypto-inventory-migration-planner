@@ -73,7 +73,7 @@ CONFIG = {
   "topology_description": "Nine-qubit, 12-edge participant-designed graph: a connected eight-edge chain plus chords [0,2], [4,6], [1,4], and [2,5]. It contains two local triangles (0-1-2 and 4-5-6), allowing the report to discuss local three-node connectivity while preserving a reproducible, explicitly non-official design.",
   "stage": "Phase 1 online Processor B",
   "source": "participant-designed topology guided by the organizer's nine-qubit requirement; research simulation",
-  "official_challenge_kit_verified": false,
+  "official_challenge_kit_verified": False,
   "note": "Participant-defined research model. This graph is intentionally designed for the experiment and is not represented as an organizer-issued edge list or calibrated hardware."
 }
 
