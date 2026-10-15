@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -28,7 +30,7 @@ jobs:
           python -m nbconvert --to notebook --execute main.ipynb --output executed_main.ipynb --ExecutePreprocessor.timeout=600
           python check_phase1_submission.py
       - name: Commit regenerated evidence on branch pushes
-        if: github.event_name == 'push' && github.ref == 'refs/heads/improve/topology-benchmark-evidence'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -37,7 +39,7 @@ jobs:
             echo "Generated evidence is already up to date."
           else
             git commit -m "Regenerate Phase 1 benchmark evidence"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_HEAD_REF}"
           fi
       - name: Upload regenerated evidence
         uses: actions/upload-artifact@v4
