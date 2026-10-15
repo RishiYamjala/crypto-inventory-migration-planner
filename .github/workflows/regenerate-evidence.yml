@@ -7,6 +7,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   regenerate:
     runs-on: ubuntu-latest
@@ -24,6 +27,18 @@ jobs:
         run: |
           python -m nbconvert --to notebook --execute main.ipynb --output executed_main.ipynb --ExecutePreprocessor.timeout=600
           python check_phase1_submission.py
+      - name: Commit regenerated evidence on branch pushes
+        if: github.event_name == 'push' && github.ref == 'refs/heads/improve/topology-benchmark-evidence'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md report.md results/tables results/figures
+          if git diff --cached --quiet; then
+            echo "Generated evidence is already up to date."
+          else
+            git commit -m "Regenerate Phase 1 benchmark evidence"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
       - name: Upload regenerated evidence
         uses: actions/upload-artifact@v4
         with:
