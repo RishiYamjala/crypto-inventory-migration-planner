@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 VULNERABILITY = {
-    'RSA': 50, 'RSA-2048': 50, 'RSA-3072': 50, 'ECDSA': 50, 'ECDSA P-256': 50,
+    'RSA': 50, 'RSA-2048': 50, 'RSA-3072': 50, 'ECDSA': 50, 'ECDSA P-256': 50, 'ECC': 50,
     'ECDH': 50, 'ECDH P-256': 50, 'Ed25519': 50, 'DH': 50, 'DSA': 50,
     '3DES': 40, 'DES': 40, 'RC4': 40, 'MD5': 40, 'SHA-1': 40,
     'AES-128': 20, 'AES-256': 0, 'ChaCha20': 0, 'SHA-256': 0, 'SHA-3': 0,
@@ -11,10 +11,10 @@ VULNERABILITY = {
 }
 SENSITIVITY = {'Low': 5, 'Medium': 12, 'High': 18, 'Critical': 25}
 LIFESPAN = {'Less than 1 year': 0, '1-5 years': 8, '5-10 years': 16, '10+ years': 25}
-PUBLIC_KEY = {'RSA-2048','RSA-3072','ECDH P-256','ECDSA P-256','Ed25519','DH','DSA'}
+PUBLIC_KEY = {'RSA','RSA-2048','RSA-3072','ECDH','ECDH P-256','ECDSA','ECDSA P-256','ECC','Ed25519','DH','DSA'}
 LONG_LIVED = {'5-10 years','10+ years'}
-KEY_EXCHANGE = {'RSA-2048', 'RSA-3072', 'ECDH P-256', 'DH'}
-SIGNATURE = {'RSA-2048', 'RSA-3072', 'ECDSA P-256', 'Ed25519', 'DSA'}
+KEY_EXCHANGE = {'RSA-2048', 'RSA-3072', 'ECDH', 'ECDH P-256', 'DH'}
+SIGNATURE = {'RSA-2048', 'RSA-3072', 'ECDSA', 'ECDSA P-256', 'Ed25519', 'DSA'}
 SYMMETRIC = {'AES-128', 'AES-256', '3DES', 'DES', 'RC4', 'ChaCha20'}
 HASHING = {'MD5', 'SHA-1', 'SHA-256', 'SHA-3'}
 
@@ -51,13 +51,13 @@ def algorithm_role(algorithm, usage):
 
 def threat_rationale(algorithm, usage, lifespan):
     """Explain the lookup result without treating every non-PQC asset equally."""
-    if algorithm in {'ECDH P-256', 'DH'}:
+    if algorithm in {'ECDH', 'ECDH P-256', 'DH'}:
         return ('Shor-risk public-key primitive; observed use and confidentiality/signature '
                 f'lifetime are {usage} and {lifespan}.')
     if algorithm in {'RSA-2048', 'RSA-3072'}:
         return ('RSA is a dual-use public-key primitive; this inventory does not prove whether '
                 f'{usage} uses it for key transport or signatures. Confirm the role before selecting ML-KEM or ML-DSA.')
-    if algorithm in {'ECDSA P-256', 'Ed25519', 'DSA'}:
+    if algorithm in {'ECDSA', 'ECDSA P-256', 'Ed25519', 'DSA'}:
         return f'Shor-risk signature/authentication primitive; observed use and asset lifetime are {usage} and {lifespan}.'
     if algorithm in {'3DES', 'DES', 'RC4', 'MD5', 'SHA-1'}:
         return 'Legacy or collision/strength-weakened primitive; replacement is recommended independently of quantum risk.'
@@ -70,18 +70,18 @@ def threat_rationale(algorithm, usage, lifespan):
 
 def migration_for(row):
     alg, usage = row['algorithm'], row['usage']
-    if alg in {'RSA-2048', 'RSA-3072'} and usage == 'TLS/HTTPS':
+    if alg in {'RSA', 'RSA-2048', 'RSA-3072'} and usage == 'TLS/HTTPS':
         return ('Review RSA role: ML-KEM-768 (FIPS 203) for key establishment and '
                 'ML-DSA (FIPS 204) for certificate signatures; confirm actual TLS usage', 'High')
-    if alg in {'ECDH P-256','DH'} and usage in {'TLS/HTTPS','VPN','SSH','Email'}:
+    if alg in {'ECDH','ECDH P-256','DH'} and usage in {'TLS/HTTPS','VPN','SSH','Email'}:
         return 'ML-KEM-768 (FIPS 203) in hybrid mode', 'Medium'
-    if alg in {'RSA-2048','RSA-3072'} and usage in {'VPN','SSH','Email'}:
+    if alg in {'RSA','RSA-2048','RSA-3072'} and usage in {'VPN','SSH','Email'}:
         return 'Confirm RSA role: ML-KEM for key establishment or ML-DSA for signatures', 'High'
-    if alg in {'RSA-2048','RSA-3072','ECDSA P-256','Ed25519','DSA'} and usage in {'Code Signing','Digital Signatures','API Tokens/JWT'}:
+    if alg in {'RSA','RSA-2048','RSA-3072','ECDSA','ECDSA P-256','Ed25519','DSA'} and usage in {'Code Signing','Digital Signatures','API Tokens/JWT'}:
         return 'ML-DSA (FIPS 204); SLH-DSA (FIPS 205) for long-lived firmware', 'High'
-    if alg in {'ECDSA P-256', 'Ed25519'} and usage == 'SSH':
+    if alg in {'ECDSA', 'ECDSA P-256', 'Ed25519'} and usage == 'SSH':
         return 'ML-DSA (FIPS 204) for authentication/signatures; assess ML-KEM for key exchange', 'High'
-    if alg == 'AES-128': return 'AES-256', 'Low'
+    if alg == 'ECC': return 'Confirm ECC role: ML-KEM (FIPS 203) for key establishment or ML-DSA (FIPS 204) for signatures', 'High'\n    if alg == 'AES-128': return 'AES-256', 'Low'
     if alg in {'3DES','DES','RC4'}: return 'AES-256-GCM', 'Low'
     if alg in {'MD5','SHA-1'}: return 'SHA-256 or SHA-3', 'Low'
     return 'No action', 'None'
