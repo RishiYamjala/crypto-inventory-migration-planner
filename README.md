@@ -38,8 +38,24 @@
 
 - Three-qubit Grover search for marked state `101`
 - Two iterations; all qubits measured
-- Identical A/B conditions: `2048` shots, optimization level `1`, seed `42`, and shared noise model
+- Identical A/B conditions: `4096` shots, optimization level `1`, seed `42`, and shared noise model
 - Measured success probability, uncertainty, depth, two-qubit gates, SWAP estimate, physical qubits, total operations, runtime, and ideal reference
+
+## PS-P2 scanner evaluation
+
+The Phase 1 guide asks for a static-analysis scan of a public open-source repository and reports of precision, recall, and scanner execution time. The local synthetic fixture is a safe demo, **not** that evaluation. This repository now includes a reproducible runner for a public GitHub repository:
+
+```powershell
+python scripts/evaluate_public_repo.py --repo psf/requests --ref main
+```
+
+It writes candidate findings to `results/tables/public_repo_scan_findings.csv` and a summary to `results/tables/public_repo_scan_summary.json`. Scanner execution time is measured separately from download time. Precision and recall intentionally remain **pending** until detections and missed findings have been manually annotated in `data/raw/psp2_ground_truth.csv`; the script will only calculate them when the full audit scope is explicitly marked complete:
+
+```powershell
+python scripts/evaluate_public_repo.py --repo psf/requests --ref main --ground-truth data/raw/psp2_ground_truth.csv --ground-truth-complete
+```
+
+Do not report unreviewed candidate counts as precision or recall. The scanner is regex-based and can miss cryptographic uses that do not match its current patterns. Review the source evidence and record both true positives and false positives, plus any missed true findings, before claiming evaluation metrics.
 
 ### Part C — Architecture evidence
 
@@ -49,9 +65,13 @@
 - Depth / two-qubit-gate / SWAP trade-off chart
 - Machine-readable CSV evidence
 
+## Current artifact status
+
+**Re-run required before treating benchmark numbers as final.** The checked-in benchmark CSVs, figures, and the snapshot table below were produced with the previous settings (2048 shots and CX depolarizing error `0.01`). The source now follows the guide's settings (4096 shots and CX depolarizing error `0.005`). Run all notebook cells to regenerate the evidence before submission; no updated numerical results are claimed by this commit.
+
 ## Verified run results
 
-These values are generated from the result CSVs—not typed in by hand.
+These values are the previous-run snapshot and are not evidence for the updated settings until the notebook is rerun.
 
 | Metric | Processor A | Processor B | B − A |
 |---|---:|---:|---:|
@@ -130,6 +150,7 @@ The artifact checklist checks files and basic expected fields; it does not certi
 ├── src/processors.py                 ← JSON loading + noise model
 ├── src/routing.py                    ← Grover + transpilation
 ├── src/metrics.py                    ← A/B metrics
+├── scripts/evaluate_public_repo.py   ← public-repo scan + evaluation runner
 ├── src/visualization.py              ← figures
 └── results/                          ← CSV and PNG evidence
 ```
@@ -138,18 +159,18 @@ The artifact checklist checks files and basic expected fields; it does not certi
 
 | Control | Value |
 |---|---:|
-| Shots | `2048` |
+| Shots | `4096` |
 | Seed | `42` |
 | Transpiler optimization level | `1` |
 | Marked state | `101` |
 | Grover iterations | `2` |
 | One-qubit depolarizing error | `0.001` |
-| CX depolarizing error | `0.01` |
+| CX depolarizing error | `0.005` |
 | Readout error | `0.01` |
 
 The SWAP value is explicitly an **estimate**: extra compiled two-qubit gates divided by three.
 
-The image-derived coupling maps are passed to Qiskit as **directed pairs exactly as listed**; edge directionality is not verified by the supplied image and no reverse edges are fabricated. The Aer noise model is also a simplified research assumption: one-qubit depolarizing noise applies to listed non-two-qubit basis operations, CX-family depolarizing noise applies to listed two-qubit basis operations, and the readout error applies to measurements. These values are not official calibration data.
+The image-derived coupling maps are passed to Qiskit as **directed pairs exactly as listed**; edge directionality is not verified by the supplied image and no reverse edges are fabricated. The Aer noise model is also a simplified research assumption: one-qubit depolarizing noise applies to listed non-two-qubit basis operations, CX-family depolarizing noise applies to listed two-qubit basis operations, and the readout error applies to measurements. The current settings follow the guide's illustrative values (CX `0.005`, readout `0.01`); they are not official calibration data.
 
 ## Outputs
 
