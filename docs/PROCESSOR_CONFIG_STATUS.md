@@ -7,7 +7,7 @@ Master Guide V2 defines the Phase 1 benchmark requirements, including the five-q
 ## Participant-defined research models
 
 - **Processor A:** five-qubit branching tree with four undirected edges.
-- **Processor B:** nine-qubit connected graph with twelve undirected edges. The graph contains two triangles, on nodes 0-1-2 and 4-5-6, so the topology rationale is explicit and testable.
+- **Processor B:** nine-qubit connected graph with twelve undirected edges. The graph contains two triangles, on nodes 3-4-5 and 6-7-8, so the topology rationale is explicit and testable.
 - **Basis gates:** `rz`, `sx`, `x`, `cx`.
 - **Noise assumptions:** one-qubit depolarizing 0.001, CX depolarizing 0.005, readout error 0.01.
 - **Coupling semantics:** JSON edges are treated as undirected physical couplings and expanded in both directions for Qiskit transpilation.
