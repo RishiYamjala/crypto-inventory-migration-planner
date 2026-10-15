@@ -257,7 +257,7 @@ The repository has not received official Challenge Kit processor definitions in 
 
 ## Participant-defined processor models
 
-The Master Guide V2 does not provide official Processor A/B JSON files; participants are expected to define and justify their coupling maps. This repository uses a five-qubit branching tree for A and a connected nine-qubit, 12-edge graph for B. B contains two local triangles (0-1-2 and 4-5-6). These are deliberate, reproducible research-model choices, not missing official files. The basis gates and benchmark noise settings match the guide; noise values remain simulator assumptions rather than measured hardware calibration.
+The Master Guide V2 does not provide official Processor A/B JSON files; participants are expected to define and justify their coupling maps. This repository uses a five-qubit branching tree for A and a connected nine-qubit, 12-edge graph for B. B contains two local triangles (3-4-5 and 6-7-8). These are deliberate, reproducible research-model choices, not missing official files. The basis gates and benchmark noise settings match the guide; noise values remain simulator assumptions rather than measured hardware calibration.
 
 Run `python validate_processors.py` to check qubit counts, basis gates, noise settings, edge validity, and the explicit non-official status of the models. This check does not authenticate hardware.
 
