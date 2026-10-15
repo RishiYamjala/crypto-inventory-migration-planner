@@ -38,9 +38,14 @@ CONFIG = {
     "cx_depolarizing": 0.005,
     "readout_error": 0.01
   },
-  "topology_description": "Five-qubit branching-tree reference architecture, represented as an undirected graph. Its four edges make the limited connectivity explicit; every edge is expanded into both directions for Qiskit transpilation.",
+  "topology_description": "Five-qubit branching-tree research architecture with 4 undirected edges, no triangles, and graph diameter 3.",
   "stage": "Phase 1 online Processor A",
   "source": "participant-defined topology based on the organizer reference image; research simulation",
+  "graph_properties": {
+    "undirected_edge_count": 4,
+    "triangle_count": 0,
+    "diameter": 3
+  },
   "official_challenge_kit_verified": False,
   "note": "Participant-defined research model. Exact official ports and hardware calibration data are not supplied; the topology and noise are explicit simulation assumptions."
 }
