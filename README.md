@@ -269,7 +269,7 @@ Run `python validate_processors.py` to check qubit counts, basis gates, noise se
 
 The supplied [`QFF_IBM_Hackathon_Guideline.pdf`](docs/QFF_IBM_Hackathon_Guideline.pdf) confirms that Phase 1 is an online A/B comparison. The latest organizer clarification specifies Processor A with 5 qubits and Processor B with 9 qubits; teams must report solution quality, circuit cost, routing/SWAP overhead, physical qubits, noise assumptions, reproducibility, graphs, circuits, and scientific interpretation. The repository includes those artifacts.
 
-The PDF does **not** include the exact Processor A/B JSON definitions or complete edge lists. It therefore confirms the benchmark *requirements*, not the authenticity of the current processor parameters. See [`docs/PHASE1_COMPLIANCE.md`](docs/PHASE1_COMPLIANCE.md) for the requirement-by-requirement evidence map and known verification limits.
+The guide intentionally does not provide official Processor A/B JSON files; participants must define and justify their coupling maps. This repository documents a five-qubit branching tree and a connected nine-qubit, 12-edge graph with two triangles. See [`docs/PHASE1_COMPLIANCE.md`](docs/PHASE1_COMPLIANCE.md) for the requirement-by-requirement evidence map and known verification limits.
 
 
 Run the online artifact checklist with:
@@ -278,13 +278,13 @@ Run the online artifact checklist with:
 python check_phase1_submission.py
 ```
 
-The official Drive folder also contains the participant instructions and starter guide, preserved here as [`QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf`](docs/QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf) and [`Challenge_Guide_Phase_1.pdf`](docs/Challenge_Guide_Phase_1.pdf). The starter guide's processor JSON on page 15 is explicitly illustrative and says to replace every value with the exact organizer-supplied definition. See [`docs/PROCESSOR_CONFIG_STATUS.md`](docs/PROCESSOR_CONFIG_STATUS.md) for the source-by-source finding.
+The official Drive folder also contains the participant instructions and starter guide, preserved here as [`QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf`](docs/QFF_2026_Hackathon_Phase1_Participant_Instructions.pdf) and [`Challenge_Guide_Phase_1.pdf`](docs/Challenge_Guide_Phase_1.pdf). The starter guide's processor JSON on page 15 is explicitly illustrative. The V2 guide's participant-defined topology requirement supersedes earlier assumptions that an official JSON manifest must be supplied. See [`docs/PROCESSOR_CONFIG_STATUS.md`](docs/PROCESSOR_CONFIG_STATUS.md) for the source-by-source finding.
 
-The uploaded applicant communications clarify the intended scope: there is no downloadable dataset, Challenge Kit, or Processor A/B/C JSON; participants are expected to research and simulate the published processor topologies. Accordingly, this repository presents its A/B models as **research simulations**, not hidden official configurations. The exact topology assumptions and limitations remain documented rather than silently asserted as fact.
+The participant communications clarify that there is no downloadable dataset or Processor A/B/C JSON; participants are expected to research and simulate the published processor topologies. Accordingly, this repository presents its A/B models as **participant-defined research simulations**, with graph properties and modeling assumptions documented.
 
 ## Automated validation and limitations
 
-The repository includes regression tests for migration recommendations, processor-driven noise, and topology-sensitive transpilation, plus a CI workflow for Python 3.11 and 3.12. CI runs the tests and the online artifact checklist. These automated checks do not replace a fresh end-to-end notebook run or organizer review.
+The repository includes regression tests for migration recommendations, processor-driven noise, and topology-sensitive transpilation, plus a CI workflow pinned to Python 3.12. CI runs tests, validates participant-defined processor settings, scans a public Requests release, executes the notebook, and uploads regenerated evidence as a workflow artifact. These automated checks do not replace a fresh end-to-end notebook run or organizer review.
 
 Before submitting, run `python -m pytest -q`, `python check_phase1_submission.py`, and execute every cell in `main.ipynb` in a clean environment. Confirm that regenerated tables, figures, and report agree. Run `python validate_processors.py` to check the participant-defined processor models. The scanner's precision and recall remain unverified until the public-repository ground-truth audit is complete.
 
