@@ -16,7 +16,7 @@ PATTERNS = {
     "RSA": re.compile(r"\brsa\.generate_private_key\b|\bopenssl\s+(?:genrsa|rsa)\b|\bRSAPrivateKey\b|\bRSAPublicKey\b|\brsa\.new\s*\(", re.I),
     "DSA": re.compile(r"\bdsa\.generate_private_key\b|\bDSA(?:ParameterNumbers|PrivateKey|PublicKey)\b|\bopenssl\s+(?:dsaparam|gendsa)\b|(?<!ML-)\bDSA\b", re.I),
     "DH": re.compile(r"\bdh\.generate_parameters\b|\bDHParameterNumbers\b|\bDiffie[- ]Hellman\b|\bopenssl\s+dhparam\b|\bDH(?:PrivateKey|PublicKey)\b|\bX9\.42\b", re.I),
-    "ECDH": re.compile(r"\bECDH\b|\bX25519\b|\bX448\b|\bec\.generate_private_key\b", re.I),
+    "ECDH": re.compile(r"\bECDH\b|\bX25519\b|\bX448\b|\bXDH\b", re.I),
     "ECDSA": re.compile(r"\bECDSA\b|\becdsa\.ECDSA\b", re.I),
     "ECC": re.compile(r"\bEllipticCurve(Private|Public)Key\b|\bsecp(?:192|224|256|384|521)[rk]?\d*\b|\bprime256v1\b|\bP-256\b", re.I),
 }
