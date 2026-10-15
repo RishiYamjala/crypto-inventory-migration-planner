@@ -41,7 +41,6 @@ jobs:
         run: python validate_processors.py
 
       - name: Evaluate scanner on public Requests repository
-        continue-on-error: true
         run: python scripts/evaluate_public_repo.py --repo psf/requests --ref v2.34.2
 
       - name: Execute notebook from a clean environment
