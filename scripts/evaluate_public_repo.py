@@ -33,8 +33,6 @@ def calculate_metrics(detections, annotations):
     if not detection_set.issubset(annotations):
         missing = sorted(detection_set - set(annotations))
         raise ValueError(f"Every detected pair must be reviewed; missing labels: {missing[:5]}")
-    if not annotations:
-        raise ValueError("Ground-truth annotations cannot be empty")
     positives = {pair for pair, present in annotations.items() if present}
     tp = len(detection_set & positives)
     fp = len(detection_set - positives)
@@ -73,6 +71,8 @@ def _read_ground_truth(path, expected_repo, expected_ref):
             if key in annotations:
                 raise ValueError(f"Duplicate ground-truth pair on line {line_number}: {key}")
             annotations[key] = value in {"true", "1", "yes"}
+    if not annotations:
+        raise ValueError("Ground-truth CSV is empty; a complete audit needs reviewed rows")
     return annotations
 
 
