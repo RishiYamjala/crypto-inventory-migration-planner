@@ -6,6 +6,7 @@ participant-defined research models; it does not authenticate hardware.
 """
 import json
 from pathlib import Path
+import networkx as nx
 
 ROOT = Path(__file__).parent
 PROCESSORS = {
@@ -44,6 +45,18 @@ def validate(path, expected_qubits):
             normalized.add(tuple(sorted((a, b))))
     if len(normalized) != len(edges):
         errors.append("duplicate undirected coupling edge")
+    graph = nx.Graph()
+    graph.add_nodes_from(range(expected_qubits))
+    graph.add_edges_from(normalized)
+    if not nx.is_connected(graph):
+        errors.append("coupling graph must be connected")
+    actual_properties = {
+        "undirected_edge_count": graph.number_of_edges(),
+        "triangle_count": sum(nx.triangles(graph).values()) // 3,
+        "diameter": nx.diameter(graph) if nx.is_connected(graph) else None,
+    }
+    if data.get("graph_properties") != actual_properties:
+        errors.append(f"graph_properties mismatch: expected {actual_properties}")
     if data.get("official_challenge_kit_verified") is not False:
         errors.append("participant-defined model must not claim official authentication")
     return errors, data
