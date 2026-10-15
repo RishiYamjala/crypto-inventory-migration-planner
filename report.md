@@ -1,7 +1,17 @@
 # P2 Report — Crypto Inventory & Migration Planner
 
+> **Artifact status:** The committed Grover metrics below are from a previous run (2048 shots, CX depolarizing error 0.01). Source settings now match the Phase 1 guide (4096 shots, CX depolarizing error 0.005). Re-run the notebook before treating those numbers as results for the current settings.
+
 ## What changed?
 The inventory was scored with the specified lookup tables, and each asset received a migration recommendation and phase. The same marked-state Grover circuit was compiled and executed on both participant-defined research processor models. The latest organizer clarification defines Processor A as 5 qubits and Processor B as 9 qubits; coupling maps are participant-designed reference architectures, while exact official basis gates, ports, directionality, and noise values remain unspecified.
+
+## Benchmark settings
+
+The source configuration uses 4096 shots, optimization level 1, seed 42, one-qubit depolarizing error 0.001, CX depolarizing error 0.005, and readout error 0.01. The error values are illustrative simulator settings from the guide, not official hardware calibration data. The current checked-in numerical result tables have not yet been regenerated with these settings.
+
+## PS-P2 public-repository scanner evaluation
+
+The guide requires a public open-source repository scan and precision, recall, and scanner execution time. The local synthetic fixture alone does not satisfy this evaluation. Use `python scripts/evaluate_public_repo.py --repo psf/requests --ref main` to create candidate findings and a scan-time summary. Precision and recall remain pending until a complete manual ground-truth audit is recorded; the runner refuses to claim them from unreviewed detections. No public-repository scan or precision/recall result is claimed in this report yet.
 
 ## Which architectural property changed?
 Processor A uses coupling edges [[0, 1], [0, 2], [0, 3], [3, 4]]; Processor B uses coupling edges [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [1, 4], [2, 5], [1, 7], [2, 8]]. The participant-selected basis gates and illustrative simulator noise parameters were held constant for this controlled comparison; they are not official calibration values.
