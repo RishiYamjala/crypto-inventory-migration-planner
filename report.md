@@ -40,7 +40,7 @@ The required three-qubit Grover benchmark can produce identical A/B metrics even
 |---|---:|---:|---:|---:|---:|---:|
 | star | 4 | 4 | 4 | 4 | 0.000 | 0.000 |
 | chain | 8 | 8 | 8 | 8 | 1.000 | 1.000 |
-| ring | 12 | 12 | 12 | 12 | 2.000 | 2.000 |
+| ring | 17 | 9 | 19 | 10 | 4.000 | 1.000 |
 
 Estimated SWAP-equivalents are extra two-qubit gates over an all-to-all baseline divided by three; this is a proxy, not a direct SWAP count. Results are simulator/compiler metrics for participant-defined models, not official hardware results or cryptographic attack estimates.
 
