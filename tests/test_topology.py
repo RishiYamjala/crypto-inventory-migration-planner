@@ -55,7 +55,7 @@ def test_processor_b_graph_is_connected_12_edge_design_with_two_triangles():
 def test_undirected_couplings_are_expanded_both_ways_for_qiskit():
     b = load_processor("processors/processor_B.json")
     directed = bidirectional_coupling_map(b)
-    directed_set = set(directed)
+    directed_set = {tuple(edge) for edge in directed}
     assert len(directed) == 24
     for a, c in b["coupling_map"]:
         assert (a, c) in directed_set
