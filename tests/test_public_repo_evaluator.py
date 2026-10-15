@@ -1,8 +1,10 @@
-import csv
-
 import pytest
 
 from scripts.evaluate_public_repo import _read_ground_truth, calculate_metrics
+
+
+REPO = "psf/requests"
+REF = "v2.34.2"
 
 
 def test_metrics_include_false_positives_and_reviewed_missed_positives():
@@ -25,36 +27,38 @@ def test_metrics_refuse_unreviewed_detection_pairs():
         calculate_metrics({("a.py", "RSA")}, {})
 
 
-def test_ground_truth_rejects_unreviewed_rows(tmp_path):
-    path = tmp_path / "truth.csv"
+def test_metrics_reject_empty_ground_truth():
+    with pytest.raises(ValueError, match="cannot be empty"):
+        calculate_metrics(set(), {})
+
+
+def _write_truth(path, rows):
     path.write_text(
-        "path,algorithm,is_present,reviewed\na.py,RSA,true,false\n",
+        "repository,ref,path,algorithm,is_present,reviewed\\n" + rows,
         encoding="utf-8",
     )
+
+
+def test_ground_truth_rejects_unreviewed_rows(tmp_path):
+    path = tmp_path / "truth.csv"
+    _write_truth(path, "psf/requests,v2.34.2,a.py,RSA,true,false\\n")
     with pytest.raises(ValueError, match="not marked reviewed"):
-        _read_ground_truth(path, "psf/requests", "v2.34.2")
+        _read_ground_truth(path, REPO, REF)
 
 
 def test_ground_truth_rejects_duplicate_path_algorithm_pairs(tmp_path):
     path = tmp_path / "truth.csv"
-    path.write_text(
-        "path,algorithm,is_present,reviewed\na.py,RSA,true,true\na.py,RSA,false,true\n",
-        encoding="utf-8",
+    _write_truth(
+        path,
+        "psf/requests,v2.34.2,a.py,RSA,true,true\\n"
+        "psf/requests,v2.34.2,a.py,RSA,false,true\\n",
     )
     with pytest.raises(ValueError, match="Duplicate ground-truth pair"):
-        _read_ground_truth(path)
+        _read_ground_truth(path, REPO, REF)
+
 
 def test_ground_truth_rejects_a_different_repository_or_ref(tmp_path):
     path = tmp_path / "truth.csv"
-    path.write_text(
-        "repository,ref,path,algorithm,is_present,reviewed\\n"
-        "psf/requests,main,a.py,RSA,true,true\\n",
-        encoding="utf-8",
-    )
+    _write_truth(path, "psf/requests,main,a.py,RSA,true,true\\n")
     with pytest.raises(ValueError, match="expected 'psf/requests'@'v2.34.2'"):
-        _read_ground_truth(path, "psf/requests", "v2.34.2")
-
-
-def test_metrics_reject_empty_ground_truth():
-    with pytest.raises(ValueError, match="cannot be empty"):
-        calculate_metrics(set(), {})
+        _read_ground_truth(path, REPO, REF)
