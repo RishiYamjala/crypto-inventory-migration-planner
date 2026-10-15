@@ -24,6 +24,8 @@ def test_processor_qubit_counts_and_basis_gates_match_guide():
     b = load_processor("processors/processor_B.json")
     assert a["num_qubits"] == 5
     assert b["num_qubits"] == 9
+    assert a["graph_properties"] == {"undirected_edge_count": 4, "triangle_count": 0, "diameter": 3}
+    assert b["graph_properties"] == {"undirected_edge_count": 12, "triangle_count": 2, "diameter": 4}
     assert a["basis_gates"] == b["basis_gates"] == ["rz", "sx", "x", "cx"]
     for processor in (a, b):
         assert processor["noise"] == {
