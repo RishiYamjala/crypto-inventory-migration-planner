@@ -8,12 +8,13 @@ from src.discovery import discover_directory
 def test_discovery_reports_target_algorithms_with_line_evidence_and_migration(tmp_path):
     sample = tmp_path / "tls.conf"
     sample.write_text(
-        "certificate uses RSA-2048 and SHA-256\n"
-        "openssl genrsa -out server.key 2048\n"
-        "algorithm = ML-DSA\n"\n        "signature = ec.ECDSA(hash_algorithm)\n"
-        "curve = secp256r1\n"
-        "kex = Diffie-Hellman\n"
-        "signer = dsa.generate_private_key()\n",
+        "certificate uses RSA-2048 and SHA-256\\n"
+        "openssl genrsa -out server.key 2048\\n"
+        "algorithm = ML-DSA\\n"
+        "signature = ec.ECDSA(hash_algorithm)\\n"
+        "curve = secp256r1\\n"
+        "kex = Diffie-Hellman\\n"
+        "signer = dsa.generate_private_key()\\n",
         encoding="utf-8",
     )
     found = discover_directory(tmp_path)
@@ -28,7 +29,7 @@ def test_discovery_reports_target_algorithms_with_line_evidence_and_migration(tm
 
 def test_discovery_reports_repeated_algorithm_on_distinct_lines(tmp_path):
     (tmp_path / "keys.py").write_text(
-        "key_a = rsa.generate_private_key()\nkey_b = rsa.generate_private_key()\n",
+        "key_a = rsa.generate_private_key()\\nkey_b = rsa.generate_private_key()\\n",
         encoding="utf-8",
     )
     found = discover_directory(tmp_path)
