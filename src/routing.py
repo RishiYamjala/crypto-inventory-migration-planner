@@ -51,7 +51,7 @@ def bidirectional_coupling_map(processor):
             raise ValueError(f"Coupling edge outside {n}-qubit device: {edge!r}")
         directed.add((a, b))
         directed.add((b, a))
-    return sorted(directed)
+    return [list(edge) for edge in sorted(directed)]
 
 
 def transpile_for_processor(circuit, processor, seed=42, optimization_level=1):
