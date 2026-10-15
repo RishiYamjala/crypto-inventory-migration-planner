@@ -72,9 +72,13 @@ def discover_directory(directory, default_sensitivity="Medium", default_lifespan
         except OSError:
             continue
         for line_number, line in enumerate(source.splitlines(), start=1):
-            for algorithm, pattern in PATTERNS.items():
-                match = pattern.search(line)
-                if not match:
+            matches = [(algorithm, pattern.search(line)) for algorithm, pattern in PATTERNS.items()]
+            matched_names = {algorithm for algorithm, match in matches if match}
+            # Prefer the size-specific RSA label for explicitly sized key generation.
+            if "RSA-2048" in matched_names or "RSA-3072" in matched_names:
+                matched_names.discard("RSA")
+            for algorithm, match in matches:
+                if not match or (algorithm == "RSA" and algorithm not in matched_names):
                     continue
                 role, migration = _role_and_migration(algorithm, line)
                 records.append({
