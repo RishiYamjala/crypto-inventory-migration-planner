@@ -9,19 +9,19 @@ def test_discovery_reports_target_algorithms_with_line_evidence_and_migration(tm
     sample = tmp_path / "tls.conf"
     sample.write_text(
         "certificate uses RSA-2048 and SHA-256\n"
-        "openssl genrsa -out server.key 2048\n"
+        "openssl genrsa -out server.key 2048\n"\n        "algorithm = ML-DSA\n"
         "curve = secp256r1\n"
         "kex = Diffie-Hellman\n"
         "signer = dsa.generate_private_key()\n",
         encoding="utf-8",
     )
     found = discover_directory(tmp_path)
-    assert {"RSA-2048", "RSA", "ECDSA", "DH", "DSA"}.issubset(set(found["algorithm"]))
+    assert {"RSA-2048", "ECDSA", "ECC", "DH", "DSA"}.issubset(set(found["algorithm"]))
     assert set(found["evidence_source"]) == {"tls.conf"}
     assert found["line_number"].gt(0).all()
     assert found["evidence_excerpt"].notna().all()
     assert found["fips_migration"].notna().all()
-    assert "SHA-256" not in set(found["algorithm"])
+    assert "SHA-256" not in set(found["algorithm"])\n    assert "ML-DSA" not in set(found["algorithm"])
 
 
 def test_discovery_reports_repeated_algorithm_on_distinct_lines(tmp_path):
