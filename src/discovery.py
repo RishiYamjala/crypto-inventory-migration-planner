@@ -8,16 +8,17 @@ from pathlib import Path
 import re
 import pandas as pd
 
-# Target class for the PS-P2 scanner. Hash-only and symmetric-only matches are
-# excluded from these public-key discovery metrics.
+# Target public-key algorithms for the PS-P2 scanner. Hash-only and symmetric
+# findings are deliberately outside these scanner metrics.
 PATTERNS = {
     "RSA-2048": re.compile(r"\bRSA[- ]?2048\b|\bdefault_bits\s*=\s*2048\b|\bopenssl\s+genrsa\b[^\n]*\b2048\b", re.I),
-    "RSA-3072": re.compile(r"\bRSA[- ]?3072\b", re.I),
+    "RSA-3072": re.compile(r"\bRSA[- ]?3072\b|\bopenssl\s+genrsa\b[^\n]*\b3072\b", re.I),
     "RSA": re.compile(r"\brsa\.generate_private_key\b|\bopenssl\s+(?:genrsa|rsa)\b|\bRSAPrivateKey\b|\bRSAPublicKey\b|\brsa\.new\s*\(", re.I),
-    "DSA": re.compile(r"\bdsa\.generate_private_key\b|\bDSA(?:ParameterNumbers|PrivateKey|PublicKey)\b|\bopenssl\s+(?:dsaparam|gendsa)\b|\bDSA\b", re.I),
+    "DSA": re.compile(r"\bdsa\.generate_private_key\b|\bDSA(?:ParameterNumbers|PrivateKey|PublicKey)\b|\bopenssl\s+(?:dsaparam|gendsa)\b|(?<!ML-)\bDSA\b", re.I),
     "DH": re.compile(r"\bdh\.generate_parameters\b|\bDHParameterNumbers\b|\bDiffie[- ]Hellman\b|\bopenssl\s+dhparam\b|\bDH(?:PrivateKey|PublicKey)\b|\bX9\.42\b", re.I),
-    "ECDH": re.compile(r"\bECDH\b|\bX25519\b|\bX448\b|\bec\.generate_private_key\b|\bEllipticCurvePrivateKey\b", re.I),
-    "ECDSA": re.compile(r"\bECDSA\b|\becdsa\.ECDSA\b|\bEllipticCurve(Private|Public)Key\b|\bsecp(?:192|224|256|384|521)[rk]?\d*\b|\bprime256v1\b|\bP-256\b", re.I),
+    "ECDH": re.compile(r"\bECDH\b|\bX25519\b|\bX448\b|\bec\.generate_private_key\b", re.I),
+    "ECDSA": re.compile(r"\bECDSA\b|\becdsa\.ECDSA\b", re.I),
+    "ECC": re.compile(r"\bEllipticCurve(Private|Public)Key\b|\bsecp(?:192|224|256|384|521)[rk]?\d*\b|\bprime256v1\b|\bP-256\b", re.I),
 }
 
 
@@ -38,6 +39,15 @@ def _role_and_migration(algorithm, line):
     if algorithm in {"DH", "ECDH"}:
         return ("key-establishment/key-agreement candidate",
                 "FIPS 203 ML-KEM (consider hybrid transition where required)")
+    if algorithm == "ECC":
+        if any(token in lower for token in ("sign", "verify", "certificate", "x509")):
+            return ("elliptic-curve use; signature context suggested, confirm manually",
+                    "FIPS 204 ML-DSA for signatures; confirm the exact ECC role")
+        if any(token in lower for token in ("derive", "exchange", "agreement", "tls", "https")):
+            return ("elliptic-curve use; key-agreement context suggested, confirm manually",
+                    "FIPS 203 ML-KEM for key establishment; confirm the exact ECC role")
+        return ("elliptic-curve use; role unknown",
+                "Manual role review: FIPS 203 ML-KEM for key establishment or FIPS 204 ML-DSA for signatures")
     return ("public-key use; role unknown", "Manual role review required")
 
 
@@ -74,7 +84,7 @@ def discover_directory(directory, default_sensitivity="Medium", default_lifespan
         for line_number, line in enumerate(source.splitlines(), start=1):
             matches = [(algorithm, pattern.search(line)) for algorithm, pattern in PATTERNS.items()]
             matched_names = {algorithm for algorithm, match in matches if match}
-            # Prefer the size-specific RSA label for explicitly sized key generation.
+            # Prefer size-specific labels for explicitly sized OpenSSL key generation.
             if "RSA-2048" in matched_names or "RSA-3072" in matched_names:
                 matched_names.discard("RSA")
             for algorithm, match in matches:
