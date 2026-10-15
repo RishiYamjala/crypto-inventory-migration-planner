@@ -265,7 +265,7 @@ Run `python validate_processors.py` to check qubit counts, basis gates, noise se
 
 The supplied [`QFF_IBM_Hackathon_Guideline.pdf`](docs/QFF_IBM_Hackathon_Guideline.pdf) confirms that Phase 1 is an online A/B comparison. The latest organizer clarification specifies Processor A with 5 qubits and Processor B with 9 qubits; teams must report solution quality, circuit cost, routing/SWAP overhead, physical qubits, noise assumptions, reproducibility, graphs, circuits, and scientific interpretation. The repository includes those artifacts.
 
-The guide intentionally does not provide official Processor A/B JSON files; participants must define and justify their coupling maps. This repository documents a five-qubit branching tree and a connected nine-qubit, 12-edge graph with two triangles. See [`docs/PHASE1_COMPLIANCE.md`](docs/PHASE1_COMPLIANCE.md) for the requirement-by-requirement evidence map and known verification limits.
+The guide intentionally does not provide official Processor A/B JSON files; participants must define and justify their coupling maps. This repository documents a five-qubit branching tree (4 edges, 0 triangles, diameter 3) and a connected nine-qubit graph (12 edges, 2 triangles, diameter 4). The latter has local triangles on nodes 3-4-5 and 6-7-8. See [`docs/PHASE1_COMPLIANCE.md`](docs/PHASE1_COMPLIANCE.md) for the requirement-by-requirement evidence map and known verification limits.
 
 
 Run the online artifact checklist with:
