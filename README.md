@@ -73,12 +73,12 @@ Do not report unreviewed candidate counts as precision or recall. The scanner is
 
 ## Verified run results
 
-These values are the previous-run snapshot and are not evidence for the updated settings until the notebook is rerun.
+These values are generated from the result CSVs—not typed in by hand.
 
 | Metric | Processor A | Processor B | B − A |
 |---|---:|---:|---:|
-| Success probability for `101` | `0.583496` | `0.583496` | `0.000000` |
-| Standard error | `0.010893` | `0.010893` | `0.000000` |
+| Success probability for `101` | `0.689453` | `0.689453` | `0.000000` |
+| Standard error | `0.007230` | `0.007230` | `0.000000` |
 | Compiled depth | `175` | `175` | `0` |
 | Counted two-qubit gates | `45` | `45` | `0` |
 | Estimated SWAP overhead | `7.000000` | `7.000000` | `0.000000` |
@@ -89,7 +89,7 @@ These values are the previous-run snapshot and are not evidence for the updated 
 
 ### Supplementary topology stress test
 
-The same processor models were also tested with synthetic star, chain, and ring interaction patterns. These results are generated from the benchmark code and are workload-specific; they do not replace the Grover result above.
+The same participant-defined processor models are tested with synthetic star, chain, and ring interaction patterns. The generated CSV is `results/tables/architecture_stress_test.csv`. These workload-specific compiler results complement, but do not replace, the required Grover benchmark.
 
 | Workload | A depth | B depth | A two-qubit gates | B two-qubit gates | A estimated SWAP-equivalents | B estimated SWAP-equivalents |
 |---|---:|---:|---:|---:|---:|---:|
@@ -97,7 +97,7 @@ The same processor models were also tested with synthetic star, chain, and ring 
 | Chain | 26 | 26 | 8 | 8 | 1.000 | 1.000 |
 | Ring | 42 | 26 | 12 | 9 | 2.000 | 1.000 |
 
-In this run, the star workload has lower compiled depth on A, the ring workload has lower depth and fewer two-qubit gates on B, and chain metrics match. This shows that topology effects depend on the workload; it does not establish universal processor superiority. The SWAP-equivalent measure is a proxy rather than a direct count of SWAP instructions.
+These metrics illustrate workload dependence, not universal processor superiority. SWAP-equivalents are a proxy, not a direct count of SWAP instructions.
 
 Full interpretation: [`report.md`](report.md) · Raw evidence: [`results/tables/`](results/tables/)
 
