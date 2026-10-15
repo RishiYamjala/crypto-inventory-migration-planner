@@ -70,7 +70,7 @@ CONFIG = {
     "cx_depolarizing": 0.005,
     "readout_error": 0.01
   },
-  "topology_description": "Nine-qubit connected research graph with 12 undirected edges, two triangles (3-4-5 and 6-7-8), and graph diameter 4. The local triangles provide dense three-node neighborhoods, while the added chords reduce long-range path lengths.",
+  "topology_description": "Nine-qubit connected research graph with 12 undirected edges, two triangles (3-4-5 and 6-7-8), and graph diameter 4. The two local triangles provide explicit dense three-node neighborhoods, while the added chords reduce long-range path lengths.",
   "stage": "Phase 1 online Processor B",
   "source": "participant-designed topology guided by the organizer's nine-qubit requirement; research simulation",
   "graph_properties": {
