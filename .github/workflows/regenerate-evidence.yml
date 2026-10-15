@@ -3,6 +3,8 @@ name: Regenerate benchmark evidence
 on:
   push:
     branches: [improve/topology-benchmark-evidence]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
