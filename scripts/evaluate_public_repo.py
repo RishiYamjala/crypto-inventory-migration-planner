@@ -121,6 +121,14 @@ def main():
             (str(row.evidence_source).replace("\\", "/"), str(row.algorithm))
             for row in findings.itertuples(index=False)
         }
+        # Seed a review worksheet from every candidate pair. Reviewers must set
+        # is_present/reviewed and add any missed positive pairs before scoring.
+        template_path = output_dir / "public_repo_ground_truth_template.csv"
+        with template_path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=["path", "algorithm", "is_present", "reviewed"])
+            writer.writeheader()
+            for rel_path, algorithm in sorted(detections):
+                writer.writerow({"path": rel_path, "algorithm": algorithm, "is_present": "", "reviewed": "false"})
         summary = {
             "repository": args.repo,
             "ref": args.ref,
@@ -128,6 +136,7 @@ def main():
             "download_seconds": round(download_seconds, 6),
             "scanner_execution_seconds": round(scan_seconds, 6),
             "candidate_findings": len(detections),
+            "ground_truth_template": str(template_path),
             "files_with_findings": int(findings["evidence_source"].nunique()) if not findings.empty else 0,
             "evaluation_status": "pending_manual_ground_truth",
             "precision": None,
