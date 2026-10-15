@@ -38,7 +38,7 @@ CONFIG = {
     "cx_depolarizing": 0.005,
     "readout_error": 0.01
   },
-  "topology_description": "Five-qubit branching-tree research architecture with 4 undirected edges, no triangles, and graph diameter 3.",
+  "topology_description": "Five-qubit branching-tree research architecture with 4 undirected edges, no triangles, and graph diameter 3. It has a three-edge longest shortest path and limited connectivity.",
   "stage": "Phase 1 online Processor A",
   "source": "participant-defined topology based on the organizer reference image; research simulation",
   "graph_properties": {
