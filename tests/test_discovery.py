@@ -53,3 +53,18 @@ def test_discovery_skips_symlink_files(tmp_path):
     except (OSError, NotImplementedError) as exc:
         pytest.skip(f"Symlinks unavailable in this environment: {exc}")
     assert discover_directory(root).empty
+
+def test_discovery_covers_requested_algorithm_families(tmp_path):
+    (tmp_path / "crypto.py").write_text(
+        "rsa.generate_private_key()\n"
+        "openssl genrsa -out rsa3072.key 3072\n"
+        "dsa.generate_private_key()\n"
+        "dh.generate_parameters(generator=2, key_size=2048)\n"
+        "ec.generate_private_key(ec.SECP256R1())\n"
+        "private_key.exchange(ec.ECDH(), peer_key)\n"
+        "curve = X25519\n",
+        encoding="utf-8",
+    )
+    found = discover_directory(tmp_path)
+    algorithms = set(found["algorithm"])
+    assert {"RSA", "RSA-3072", "DSA", "DH", "ECDH", "ECC"}.issubset(algorithms)
