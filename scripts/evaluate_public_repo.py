@@ -24,7 +24,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 from src.discovery import discover_directory
 
-GROUND_TRUTH_COLUMNS = {"path", "algorithm", "is_present", "reviewed"}
+GROUND_TRUTH_COLUMNS = {"path", "algorithm", "is_present", "reviewed", "repository", "ref"}
 
 
 def calculate_metrics(detections, annotations):
@@ -33,6 +33,8 @@ def calculate_metrics(detections, annotations):
     if not detection_set.issubset(annotations):
         missing = sorted(detection_set - set(annotations))
         raise ValueError(f"Every detected pair must be reviewed; missing labels: {missing[:5]}")
+    if not annotations:
+        raise ValueError("Ground-truth annotations cannot be empty")
     positives = {pair for pair, present in annotations.items() if present}
     tp = len(detection_set & positives)
     fp = len(detection_set - positives)
@@ -46,7 +48,7 @@ def calculate_metrics(detections, annotations):
     }
 
 
-def _read_ground_truth(path):
+def _read_ground_truth(path, expected_repo, expected_ref):
     annotations = {}
     with Path(path).open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
@@ -55,6 +57,11 @@ def _read_ground_truth(path):
         for line_number, row in enumerate(reader, start=2):
             rel_path = row["path"].replace("\\", "/").strip()
             algorithm = row["algorithm"].strip()
+            if row["repository"].strip() != expected_repo or row["ref"].strip() != expected_ref:
+                raise ValueError(
+                    f"Ground-truth line {line_number} targets "
+                    f"{row['repository']!r}@{row['ref']!r}, expected {expected_repo!r}@{expected_ref!r}"
+                )
             if not rel_path or not algorithm:
                 raise ValueError(f"Empty path or algorithm on ground-truth line {line_number}")
             if row["reviewed"].strip().lower() not in {"true", "1", "yes"}:
@@ -87,7 +94,7 @@ def _download_and_extract(repo, ref, destination):
                 continue
             if member.isfile() or member.isdir():
                 safe_members.append(member)
-        archive.extractall(destination, members=safe_members)
+        archive.extractall(destination, members=safe_members, filter="data")
     roots = [p for p in Path(destination).iterdir() if p.is_dir() and p.name != "__pycache__"]
     if len(roots) != 1:
         raise ValueError("Could not identify one source root in the GitHub archive")
@@ -125,10 +132,20 @@ def main():
         # is_present/reviewed and add any missed positive pairs before scoring.
         template_path = output_dir / "public_repo_ground_truth_template.csv"
         with template_path.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.DictWriter(handle, fieldnames=["path", "algorithm", "is_present", "reviewed"])
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=["repository", "ref", "path", "algorithm", "is_present", "reviewed"],
+            )
             writer.writeheader()
             for rel_path, algorithm in sorted(detections):
-                writer.writerow({"path": rel_path, "algorithm": algorithm, "is_present": "", "reviewed": "false"})
+                writer.writerow({
+                    "repository": args.repo,
+                    "ref": args.ref,
+                    "path": rel_path,
+                    "algorithm": algorithm,
+                    "is_present": "",
+                    "reviewed": "false",
+                })
         summary = {
             "repository": args.repo,
             "ref": args.ref,
@@ -148,7 +165,7 @@ def main():
             ],
         }
         if args.ground_truth:
-            annotations = _read_ground_truth(args.ground_truth)
+            annotations = _read_ground_truth(args.ground_truth, args.repo, args.ref)
             summary.update(calculate_metrics(detections, annotations))
             summary["evaluation_status"] = "human_ground_truth_scored"
             summary["ground_truth_rows"] = len(annotations)
