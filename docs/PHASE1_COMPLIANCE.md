@@ -9,7 +9,7 @@ Sources reviewed: the Master Guide V2 and the available participant instructions
 | Public-repository evaluation with precision, recall, and scan time | `scripts/evaluate_public_repo.py` | Runner implemented; valid metrics require a completed manual ground-truth audit |
 | Processor A/B qubit counts | `processors/processor_A.json`, `processors/processor_B.json` | 5 and 9 qubits |
 | Basis gates and simulator noise | Processor JSON files and `src/processors.py` | Matches guide settings: rz/sx/x/cx; one-qubit 0.001, CX 0.005, readout 0.01 |
-| Coupling-map rationale | Processor JSON descriptions and report | Participant-defined graphs documented; B has 12 edges and two triangles |
+| Coupling-map rationale | Processor JSON descriptions and report | Participant-defined graphs documented; A has 4 edges/diameter 3, B has 12 edges/2 triangles/diameter 4 |
 | Same circuit and controlled A/B settings | `main.ipynb`, `src/metrics.py` | Implemented; regenerate outputs after topology changes |
 | Quantitative A/B table and graph figures | `results/tables/`, `results/figures/` | Existing outputs must be regenerated against this branch before claiming final results |
 | Pinned dependencies | `requirements.txt` | Pinned for Python 3.12; CI must confirm compatibility |
