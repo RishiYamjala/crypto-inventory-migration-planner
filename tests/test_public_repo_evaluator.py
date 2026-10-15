@@ -27,9 +27,10 @@ def test_metrics_refuse_unreviewed_detection_pairs():
         calculate_metrics({("a.py", "RSA")}, {})
 
 
-def test_metrics_reject_empty_ground_truth():
-    with pytest.raises(ValueError, match="cannot be empty"):
-        calculate_metrics(set(), {})
+def test_metrics_leave_precision_and_recall_undefined_without_examples():
+    result = calculate_metrics(set(), {})
+    assert result["precision"] is None
+    assert result["recall"] is None
 
 
 def _write_truth(path, rows):
