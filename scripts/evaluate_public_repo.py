@@ -152,6 +152,8 @@ def main():
             summary.update(calculate_metrics(detections, annotations))
             summary["evaluation_status"] = "human_ground_truth_scored"
             summary["ground_truth_rows"] = len(annotations)
+            summary["ground_truth_file"] = str(Path(args.ground_truth))
+            summary["ground_truth_complete_asserted_by_operator"] = True
         (output_dir / "public_repo_scan_summary.json").write_text(
             json.dumps(summary, indent=2) + "\n", encoding="utf-8"
         )
