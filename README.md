@@ -4,7 +4,7 @@
 >
 > Turn cryptographic inventory into a quantum-risk migration plan—and measure how the **same Grover benchmark** behaves on two processor topologies.
 
-[![Qiskit](https://img.shields.io/badge/Qiskit-Phase%201-6929C4?logo=qiskit&logoColor=white)](https://www.ibm.com/quantum/qiskit) [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/) [![Reproducible](https://img.shields.io/badge/experiment-reproducible-20B26B)](#reproducibility) [![AI disclosed](https://img.shields.io/badge/AI%20assistance-disclosed-555555)](#ai-assistance-disclosure)
+[![Qiskit](https://img.shields.io/badge/Qiskit-Phase%201-6929C4?logo=qiskit&logoColor=white)](https://www.ibm.com/quantum/qiskit) [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/) [![Reproducible](https://img.shields.io/badge/experiment-reproducible-20B26B)](#reproducibility) [![AI disclosed](https://img.shields.io/badge/AI%20assistance-disclosed-555555)](#ai-assistance-disclosure)
 
 ## The thesis
 
@@ -46,7 +46,7 @@
 The Phase 1 guide asks for a static-analysis scan of a public open-source repository and reports of precision, recall, and scanner execution time. The local synthetic fixture is a safe demo, **not** that evaluation. This repository now includes a reproducible runner for a public GitHub repository:
 
 ```powershell
-python scripts/evaluate_public_repo.py --repo psf/requests --ref main
+python scripts/evaluate_public_repo.py --repo psf/requests --ref v2.34.2
 ```
 
 It writes candidate findings to `results/tables/public_repo_scan_findings.csv` and a summary to `results/tables/public_repo_scan_summary.json`. Scanner execution time is measured separately from download time. The runner writes a review template to `results/tables/public_repo_ground_truth_template.csv`; copy that generated file to `data/raw/psp2_ground_truth.csv` before annotating it. Annotate every detected path/algorithm pair and add any true findings the scanner missed. Use `is_present=true/false` and `reviewed=true`. Precision and recall intentionally remain **pending** until the full audit scope is reviewed:
