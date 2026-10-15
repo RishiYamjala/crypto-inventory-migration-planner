@@ -49,12 +49,12 @@ The Phase 1 guide asks for a static-analysis scan of a public open-source reposi
 python scripts/evaluate_public_repo.py --repo psf/requests --ref v2.34.2
 ```
 
-It writes candidate findings to `results/tables/public_repo_scan_findings.csv` and a summary to `results/tables/public_repo_scan_summary.json`. Scanner execution time is measured separately from download time. The runner writes a review template to `results/tables/public_repo_ground_truth_template.csv`; copy that generated file to `data/raw/psp2_ground_truth.csv` before annotating it. Annotate every detected path/algorithm pair and add any true findings the scanner missed. Use `is_present=true/false` and `reviewed=true`. Precision and recall intentionally remain **pending** until the full audit scope is reviewed:
+It writes candidate findings to `results/tables/public_repo_scan_findings.csv` and a summary to `results/tables/public_repo_scan_summary.json`. Scanner execution time is measured separately from download time. The runner writes a review template to `results/tables/public_repo_ground_truth_template.csv`; copy that generated file to `data/raw/psp2_ground_truth.csv` before annotating it. Annotate every detected path/algorithm pair and add any true findings the scanner missed. Keep the generated `repository` and `ref` columns unchanged, then set `is_present=true/false` and `reviewed=true` for every candidate. Add missed true findings with the same repository/ref values. The evaluator rejects labels from a different repository or revision. Precision and recall intentionally remain **pending** until the full audit scope is reviewed:
 
 ```powershell
 Copy-Item results/tables/public_repo_ground_truth_template.csv data/raw/psp2_ground_truth.csv
 # After manually completing the audit:
-python scripts/evaluate_public_repo.py --repo psf/requests --ref main --ground-truth data/raw/psp2_ground_truth.csv --ground-truth-complete
+python scripts/evaluate_public_repo.py --repo psf/requests --ref v2.34.2 --ground-truth data/raw/psp2_ground_truth.csv --ground-truth-complete
 ```
 
 Do not report unreviewed candidate counts as precision or recall. The scanner is regex-based and can miss cryptographic uses that do not match its current patterns. Review the source evidence and record both true positives and false positives, plus any missed true findings, before claiming evaluation metrics.
