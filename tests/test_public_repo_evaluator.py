@@ -32,7 +32,7 @@ def test_ground_truth_rejects_unreviewed_rows(tmp_path):
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="not marked reviewed"):
-        _read_ground_truth(path)
+        _read_ground_truth(path, "psf/requests", "v2.34.2")
 
 
 def test_ground_truth_rejects_duplicate_path_algorithm_pairs(tmp_path):
@@ -43,3 +43,18 @@ def test_ground_truth_rejects_duplicate_path_algorithm_pairs(tmp_path):
     )
     with pytest.raises(ValueError, match="Duplicate ground-truth pair"):
         _read_ground_truth(path)
+
+def test_ground_truth_rejects_a_different_repository_or_ref(tmp_path):
+    path = tmp_path / "truth.csv"
+    path.write_text(
+        "repository,ref,path,algorithm,is_present,reviewed\\n"
+        "psf/requests,main,a.py,RSA,true,true\\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="expected 'psf/requests'@'v2.34.2'"):
+        _read_ground_truth(path, "psf/requests", "v2.34.2")
+
+
+def test_metrics_reject_empty_ground_truth():
+    with pytest.raises(ValueError, match="cannot be empty"):
+        calculate_metrics(set(), {})
