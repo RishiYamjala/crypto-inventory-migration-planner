@@ -49,9 +49,11 @@ The Phase 1 guide asks for a static-analysis scan of a public open-source reposi
 python scripts/evaluate_public_repo.py --repo psf/requests --ref main
 ```
 
-It writes candidate findings to `results/tables/public_repo_scan_findings.csv` and a summary to `results/tables/public_repo_scan_summary.json`. Scanner execution time is measured separately from download time. Precision and recall intentionally remain **pending** until detections and missed findings have been manually annotated in `data/raw/psp2_ground_truth.csv`; the script will only calculate them when the full audit scope is explicitly marked complete:
+It writes candidate findings to `results/tables/public_repo_scan_findings.csv` and a summary to `results/tables/public_repo_scan_summary.json`. Scanner execution time is measured separately from download time. To prepare labels, copy `data/raw/psp2_ground_truth_template.csv` to `data/raw/psp2_ground_truth.csv`. Annotate every detected path/algorithm pair and add any true findings the scanner missed. Use `is_present=true/false` and `reviewed=true`. Precision and recall intentionally remain **pending** until the full audit scope is reviewed:
 
 ```powershell
+Copy-Item data/raw/psp2_ground_truth_template.csv data/raw/psp2_ground_truth.csv
+# After manually completing the audit:
 python scripts/evaluate_public_repo.py --repo psf/requests --ref main --ground-truth data/raw/psp2_ground_truth.csv --ground-truth-complete
 ```
 
