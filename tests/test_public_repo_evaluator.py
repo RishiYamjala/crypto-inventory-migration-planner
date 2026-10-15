@@ -34,14 +34,14 @@ def test_metrics_reject_empty_ground_truth():
 
 def _write_truth(path, rows):
     path.write_text(
-        "repository,ref,path,algorithm,is_present,reviewed\\n" + rows,
+        "repository,ref,path,algorithm,is_present,reviewed\n" + rows,
         encoding="utf-8",
     )
 
 
 def test_ground_truth_rejects_unreviewed_rows(tmp_path):
     path = tmp_path / "truth.csv"
-    _write_truth(path, "psf/requests,v2.34.2,a.py,RSA,true,false\\n")
+    _write_truth(path, "psf/requests,v2.34.2,a.py,RSA,true,false\n")
     with pytest.raises(ValueError, match="not marked reviewed"):
         _read_ground_truth(path, REPO, REF)
 
@@ -50,8 +50,8 @@ def test_ground_truth_rejects_duplicate_path_algorithm_pairs(tmp_path):
     path = tmp_path / "truth.csv"
     _write_truth(
         path,
-        "psf/requests,v2.34.2,a.py,RSA,true,true\\n"
-        "psf/requests,v2.34.2,a.py,RSA,false,true\\n",
+        "psf/requests,v2.34.2,a.py,RSA,true,true\n"
+        "psf/requests,v2.34.2,a.py,RSA,false,true\n",
     )
     with pytest.raises(ValueError, match="Duplicate ground-truth pair"):
         _read_ground_truth(path, REPO, REF)
@@ -59,6 +59,6 @@ def test_ground_truth_rejects_duplicate_path_algorithm_pairs(tmp_path):
 
 def test_ground_truth_rejects_a_different_repository_or_ref(tmp_path):
     path = tmp_path / "truth.csv"
-    _write_truth(path, "psf/requests,main,a.py,RSA,true,true\\n")
+    _write_truth(path, "psf/requests,main,a.py,RSA,true,true\n")
     with pytest.raises(ValueError, match="expected 'psf/requests'@'v2.34.2'"):
         _read_ground_truth(path, REPO, REF)
