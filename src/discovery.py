@@ -11,7 +11,7 @@ import pandas as pd
 # Target class for the PS-P2 scanner. Hash-only and symmetric-only matches are
 # excluded from these public-key discovery metrics.
 PATTERNS = {
-    "RSA-2048": re.compile(r"\b(?:RSA[- ]?2048|default_bits\s*=\s*2048)\b", re.I),
+    "RSA-2048": re.compile(r"\bRSA[- ]?2048\b|\bdefault_bits\s*=\s*2048\b|\bopenssl\s+genrsa\b[^\n]*\b2048\b", re.I),
     "RSA-3072": re.compile(r"\bRSA[- ]?3072\b", re.I),
     "RSA": re.compile(r"\brsa\.generate_private_key\b|\bopenssl\s+(?:genrsa|rsa)\b|\bRSAPrivateKey\b|\bRSAPublicKey\b|\brsa\.new\s*\(", re.I),
     "DSA": re.compile(r"\bdsa\.generate_private_key\b|\bDSA(?:ParameterNumbers|PrivateKey|PublicKey)\b|\bopenssl\s+(?:dsaparam|gendsa)\b|\bDSA\b", re.I),
