@@ -68,3 +68,11 @@ def test_discovery_covers_requested_algorithm_families(tmp_path):
     found = discover_directory(tmp_path)
     algorithms = set(found["algorithm"])
     assert {"RSA", "RSA-3072", "DSA", "DH", "ECDH", "ECC"}.issubset(algorithms)
+
+def test_generic_ec_private_key_generation_is_not_assumed_to_be_ecdh(tmp_path):
+    (tmp_path / "keys.py").write_text(
+        "key = ec.generate_private_key(ec.SECP256R1())\\n", encoding="utf-8"
+    )
+    found = discover_directory(tmp_path)
+    assert "ECDH" not in set(found["algorithm"])
+    assert "ECC" in set(found["algorithm"])
