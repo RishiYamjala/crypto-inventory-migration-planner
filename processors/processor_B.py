@@ -39,20 +39,20 @@ CONFIG = {
       8
     ],
     [
+      3,
+      5
+    ],
+    [
+      6,
+      8
+    ],
+    [
       0,
-      2
-    ],
-    [
-      4,
-      6
-    ],
-    [
-      1,
       4
     ],
     [
       2,
-      5
+      6
     ]
   ],
   "basis_gates": [
@@ -70,7 +70,7 @@ CONFIG = {
     "cx_depolarizing": 0.005,
     "readout_error": 0.01
   },
-  "topology_description": "Nine-qubit, 12-edge participant-designed graph: a connected eight-edge chain plus chords [0,2], [4,6], [1,4], and [2,5]. It contains two local triangles (0-1-2 and 4-5-6), allowing the report to discuss local three-node connectivity while preserving a reproducible, explicitly non-official design.",
+  "topology_description": "Nine-qubit, 12-edge participant-designed graph: a connected eight-edge chain plus chords [3,5], [6,8], [0,4], and [2,6]. It contains two local triangles (3-4-5 and 6-7-8), allowing the report to discuss local three-node connectivity while preserving a reproducible, explicitly non-official design.",
   "stage": "Phase 1 online Processor B",
   "source": "participant-designed topology guided by the organizer's nine-qubit requirement; research simulation",
   "official_challenge_kit_verified": False,
