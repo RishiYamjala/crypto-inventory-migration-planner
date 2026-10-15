@@ -10,7 +10,7 @@ def test_discovery_reports_target_algorithms_with_line_evidence_and_migration(tm
     sample.write_text(
         "certificate uses RSA-2048 and SHA-256\n"
         "openssl genrsa -out server.key 2048\n"
-        "algorithm = ML-DSA\n"
+        "algorithm = ML-DSA\n"\n        "signature = ec.ECDSA(hash_algorithm)\n"
         "curve = secp256r1\n"
         "kex = Diffie-Hellman\n"
         "signer = dsa.generate_private_key()\n",
