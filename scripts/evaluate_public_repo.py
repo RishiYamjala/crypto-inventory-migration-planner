@@ -106,7 +106,7 @@ def main():
     parser.add_argument("--repo", required=True, help="Public GitHub repository as OWNER/REPOSITORY")
     parser.add_argument("--ref", default="main", help="Branch, tag, or commit (default: main)")
     parser.add_argument("--output-dir", default="results/tables", help="Directory for CSV/JSON outputs")
-    parser.add_argument("--ground-truth", help="Reviewed CSV with path,algorithm,is_present,reviewed")
+    parser.add_argument("--ground-truth", help="Reviewed CSV with repository,ref,path,algorithm,is_present,reviewed")
     parser.add_argument("--ground-truth-complete", action="store_true", help="Assert the audited scope is complete")
     args = parser.parse_args()
     if args.ground_truth_complete and not args.ground_truth:
