@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   regenerate:
@@ -30,21 +30,6 @@ jobs:
         run: |
           python -m nbconvert --to notebook --execute main.ipynb --output executed_main.ipynb --ExecutePreprocessor.timeout=600
           python check_phase1_submission.py
-      - name: Commit regenerated text and result artifacts
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        continue-on-error: true
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md report.md results/tables results/figures
-          if git diff --cached --quiet; then
-            echo "Generated evidence is already up to date."
-          else
-            git commit -m "Regenerate Phase 1 benchmark evidence"
-            git fetch origin "$GITHUB_HEAD_REF"
-            git rebase "origin/$GITHUB_HEAD_REF"
-            git push origin "HEAD:${GITHUB_HEAD_REF}"
-          fi
       - name: Upload regenerated evidence
         if: always()
         uses: actions/upload-artifact@v4
