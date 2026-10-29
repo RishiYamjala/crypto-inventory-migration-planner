@@ -44,3 +44,20 @@ The required three-qubit Grover benchmark can produce identical A/B metrics even
 
 Estimated SWAP-equivalents are extra two-qubit gates over an all-to-all baseline divided by three; this is a proxy, not a direct SWAP count. Results are simulator/compiler metrics for participant-defined models, not official hardware results or cryptographic attack estimates.
 
+## Phase 2 heavy-hex comparison
+
+Phase 1 Processor B has two triangles and one qubit with four neighbours, so it is only heavy-hex-inspired; a real heavy-hex lattice has at most three neighbours per qubit and a shortest loop of 12 qubits. Phase 2 adds a checker (`processors/heavy_hex.py`) and two candidate Processor B variants that are genuine heavy-hex fragments, with 7 and 9 qubits. Because the shortest loop is 12 qubits, both fragments are trees. The Phase 1 processors and results are unchanged. The same Grover benchmark (marked state `101`, 4096 shots, optimization level 1, seed 42, shared noise model) was run on all four models with `python -m src.heavyhex_benchmark`.
+
+| Processor | Triangles | Success probability | Depth | Two-qubit gates | Est. SWAP-equivalents |
+|---|---:|---:|---:|---:|---:|
+| Processor A | 0 | 0.741699 | 87 | 48 | 8.000 |
+| Processor B (Phase 1) | 2 | 0.814209 | 56 | 24 | 0.000 |
+| Processor B heavy-hex 7q | 0 | 0.742188 | 87 | 48 | 8.000 |
+| Processor B heavy-hex 9q | 0 | 0.741699 | 87 | 48 | 8.000 |
+
+The three triangle-free models perform alike and the model with triangles is cheaper. The success-probability differences among A and the two heavy-hex fragments (at most 0.0005) are well inside one standard error (about 0.007), while the gap to Phase 1 Processor B (0.0725) is about eight standard errors of the difference (combined standard error about 0.0091). A plausible driver is that the Grover circuit's Toffoli-style blocks need three mutually coupled qubits: an isolated check compiled one Toffoli to 6 CX on a triangle and 9 CX on a three-qubit path. That check does not fully explain the 24 extra two-qubit gates in the full circuit, so it is a likely contributor rather than a proven decomposition.
+
+On the supplementary stress workloads, star and chain are identical on all four models. On the ring workload the two-qubit gate counts are 19 (A), 10 (Phase 1 B), 19 (heavy-hex 7q), and 16 (heavy-hex 9q). These are single seeded compilations, so the difference between the 7q and 9q variants should not be read as a ranking between them.
+
+The heavy-hex variants are participant-defined research models (`official_challenge_kit_verified: false`); their qubit counts have not been confirmed with the organizers. Results are simulator and compiler metrics, not hardware performance or cryptographic attack estimates. Evidence tables: `results/tables/phase2_heavyhex_comparison.csv` and `results/tables/phase2_heavyhex_stress_test.csv`.
+

@@ -1,0 +1,5 @@
+label,num_qubits,undirected_edges,triangles,diameter,processor,success_probability,std_error,depth,two_qubit_gates,measured_swap_count,swap_estimate,physical_qubits_used,total_ops,runtime_seconds,shots,seed,ideal_success_probability,baseline_two_qubit_gates,extra_two_qubit_gates
+Processor A,5,4,0,3,Processor A,0.74169921875,0.006839066027951306,87,48,0,8.0,3,120,0.06725891199999978,4096,42,0.949462890625,24,24
+Processor B,9,12,2,4,Processor B,0.814208984375,0.006077155171221583,56,24,0,0.0,3,96,0.026469965999979195,4096,42,0.949462890625,24,0
+Processor B heavy-hex 7q,7,6,0,4,Processor B heavy-hex candidate (7 qubits),0.7421875,0.006834847499594443,87,48,0,8.0,3,120,0.03867601000001741,4096,42,0.949462890625,24,24
+Processor B heavy-hex 9q,9,8,0,6,Processor B heavy-hex candidate (9 qubits),0.74169921875,0.006839066027951306,87,48,0,8.0,3,120,0.02859780600005024,4096,42,0.949462890625,24,24

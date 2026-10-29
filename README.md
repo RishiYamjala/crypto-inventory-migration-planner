@@ -101,6 +101,38 @@ These synthetic star, chain, and ring workloads complement but do not replace th
 
 Estimated SWAP-equivalents are a proxy, not a direct SWAP count. See report.md and results/tables/ for the detailed report and machine-readable evidence.
 
+### Phase 2 — heavy-hex comparison
+
+Phase 1 Processor B is only *heavy-hex-inspired*: it has two triangles and one qubit with four neighbours, which a real heavy-hex lattice never has (every qubit has at most three neighbours and the shortest loop is 12 qubits). `processors/heavy_hex.py` adds a checker for that rule and two candidate variants, `processor_B_heavyhex_7q.json` and `processor_B_heavyhex_9q.json`, that are genuine heavy-hex fragments. At 7 and 9 qubits such a fragment is necessarily a tree; that is a property of the geometry, not a design choice. Phase 1 files are unchanged.
+
+```powershell
+python -m src.heavyhex_benchmark          # writes the two phase2_heavyhex_*.csv tables
+python processors/heavy_hex.py            # regenerates the two heavy-hex JSON files
+python -m pytest tests/test_heavy_hex.py tests/test_heavyhex_benchmark.py
+```
+
+The same Grover benchmark (marked state `101`, 4096 shots, optimization level 1, seed 42, shared noise model) on all four models:
+
+| Processor | Qubits | Triangles | Success probability | Std. error | Depth | Two-qubit gates | Est. SWAP-equivalents |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Processor A | 5 | 0 | 0.741699 | 0.006839 | 87 | 48 | 8.000 |
+| Processor B (Phase 1) | 9 | 2 | 0.814209 | 0.006077 | 56 | 24 | 0.000 |
+| Processor B heavy-hex 7q | 7 | 0 | 0.742188 | 0.006835 | 87 | 48 | 8.000 |
+| Processor B heavy-hex 9q | 9 | 0 | 0.741699 | 0.006839 | 87 | 48 | 8.000 |
+
+Supplementary ring workload (the only one of the three that separates the processors; star and chain are identical on all four):
+
+| Processor | Depth | Two-qubit gates | Est. SWAP-equivalents |
+|---|---:|---:|---:|
+| Processor A | 17 | 19 | 4.000 |
+| Processor B (Phase 1) | 9 | 10 | 1.000 |
+| Processor B heavy-hex 7q | 15 | 19 | 4.000 |
+| Processor B heavy-hex 9q | 16 | 16 | 3.000 |
+
+**Interpretation:** on this workload the three triangle-free models (A and both heavy-hex fragments) behave the same, and the one model with triangles (Phase 1 Processor B) is cheaper. This is consistent with the Grover circuit's Toffoli-style blocks wanting three mutually coupled qubits: in a separate isolated check a single Toffoli needed 6 CX on a triangle and 9 on a three-qubit path. That check does not fully account for the 24 extra gates in the full circuit, so treat it as a likely driver, not a proven decomposition. The 7q/9q success probabilities differ from Processor A by at most 0.0005, far inside one standard error (about 0.007). The 7q-versus-9q differences on the ring workload come from a single seeded compilation and should not be read as a ranking between them.
+
+**Status:** the heavy-hex variants are participant-defined research models (`official_challenge_kit_verified: false`), not organizer files and not calibrated hardware, and their qubit counts have not been confirmed with the organizers. Results are simulator and compiler metrics, not hardware performance or cryptographic attack estimates. The committed tables are `results/tables/phase2_heavyhex_comparison.csv` and `results/tables/phase2_heavyhex_stress_test.csv`.
+
 ---
 
 ## Quick start
@@ -149,10 +181,14 @@ The artifact checklist checks files and basic expected fields; it does not certi
 ├── processors/processor_B.py         ← reproducible nine-qubit model generator
 ├── processors/processor_A.json       ← generated five-qubit branching model
 ├── processors/processor_B.json       ← generated nine-qubit heavy-hex-inspired model
+├── processors/heavy_hex.py           ← Phase 2 heavy-hex checker + 7q/9q variant generator
+├── processors/processor_B_heavyhex_7q.json ← Phase 2 candidate: 7-qubit heavy-hex fragment
+├── processors/processor_B_heavyhex_9q.json ← Phase 2 candidate: 9-qubit heavy-hex fragment
 ├── src/problem.py                    ← scoring + migration logic
 ├── src/processors.py                 ← JSON loading + noise model
 ├── src/routing.py                    ← Grover + transpilation
 ├── src/metrics.py                    ← A/B metrics
+├── src/heavyhex_benchmark.py         ← Phase 2: A, B, and heavy-hex 7q/9q comparison
 ├── scripts/evaluate_public_repo.py   ← public-repo scan + evaluation runner
 ├── src/visualization.py              ← figures
 └── results/                          ← CSV and PNG evidence
@@ -186,6 +222,8 @@ The JSON coupling maps are documented as **undirected physical couplings** and e
 - [`AB_comparison.csv`](results/tables/AB_comparison.csv)
 - [`final_comparison.csv`](results/tables/final_comparison.csv)
 - [`architecture_stress_test.csv`](results/tables/architecture_stress_test.csv) — supplementary topology evidence
+- [`phase2_heavyhex_comparison.csv`](results/tables/phase2_heavyhex_comparison.csv) — Phase 2 Grover benchmark on A, B, heavy-hex 7q/9q
+- [`phase2_heavyhex_stress_test.csv`](results/tables/phase2_heavyhex_stress_test.csv) — Phase 2 supplementary stress workloads on the same four models
 
 ### Figures
 
