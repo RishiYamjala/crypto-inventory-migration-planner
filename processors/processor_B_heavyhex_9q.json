@@ -1,0 +1,67 @@
+{
+  "name": "Processor B heavy-hex candidate (9 qubits)",
+  "num_qubits": 9,
+  "coupling_map": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      2,
+      8
+    ]
+  ],
+  "basis_gates": [
+    "rz",
+    "sx",
+    "x",
+    "cx"
+  ],
+  "ports": {
+    "readout": "standard",
+    "control": "standard"
+  },
+  "noise": {
+    "one_qubit_depolarizing": 0.001,
+    "cx_depolarizing": 0.005,
+    "readout_error": 0.01
+  },
+  "topology_description": "9-qubit connected piece of a heavy-hex lattice: every qubit has at most three neighbours and there are no triangles. Because the shortest heavy-hex loop is 12 qubits, this piece is a tree.",
+  "stage": "Provisional comparison variant (not a replacement for Phase 1 Processor B)",
+  "source": "participant-defined research model; qubit count must be confirmed with the organizers",
+  "graph_properties": {
+    "undirected_edge_count": 8,
+    "triangle_count": 0,
+    "diameter": 6
+  },
+  "heavy_hex_check": {
+    "is_heavy_hex_fragment": true,
+    "max_degree": 3
+  },
+  "official_challenge_kit_verified": false,
+  "note": "Participant-defined research model. Not an organizer-issued edge list and not calibrated hardware. Noise values are the same simulator assumptions as Phase 1."
+}
