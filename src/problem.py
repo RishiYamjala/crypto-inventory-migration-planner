@@ -99,6 +99,8 @@ def migration_for(row):
         return "SHA-256 or SHA-3", "Low"
     if alg in {"ML-KEM", "ML-DSA", "SLH-DSA"}:
         return "Maintain approved PQC implementation and cryptographic agility", "Low"
+    if alg not in VULNERABILITY:
+        return "Identify and validate the cryptographic algorithm and its usage before assigning a migration target", "Medium"
     return "No action; retain lifecycle monitoring", "None"
 
 
@@ -151,13 +153,20 @@ def score_inventory(input_path="data/raw/inventory.csv", output_dir="results/tab
     rows, used_ids = [], set()
     for _, row in df.iterrows():
         alg, usage = str(row["algorithm"]), str(row["usage"])
-        vuln = vulnerability_score(alg)
+        try:
+            vuln = vulnerability_score(alg)
+            unknown_algorithm = False
+        except KeyError:
+            # Unknown is not equivalent to safe: preserve it as an explicit review item.
+            vuln = 0
+            unknown_algorithm = True
         score = 0 if vuln == 0 else min(100, vuln + SENSITIVITY[row["sensitivity"]] + LIFESPAN[row["lifespan"]])
-        level = "Safe" if vuln == 0 else ("Critical" if score >= 80 else "High" if score >= 60 else "Medium" if score >= 40 else "Low")
+        level = "Unknown" if unknown_algorithm else ("Safe" if vuln == 0 else ("Critical" if score >= 80 else "High" if score >= 60 else "Medium" if score >= 40 else "Low"))
         hndl = bool(alg in PUBLIC_KEY and usage in {"TLS/HTTPS", "VPN", "SSH", "Email"} and row["lifespan"] in LONG_LIVED)
         migration, effort = migration_for(row)
-        phase = "Phase 1 (0-6 months)" if level in {"Critical", "High"} else "Phase 2 (6-18 months)" if level == "Medium" else "Phase 3 (18-36 months)"
-        rationale = threat_rationale(alg, usage, row["lifespan"])
+        phase = "Phase 1 (0-6 months)" if level in {"Critical", "High", "Unknown"} else "Phase 2 (6-18 months)" if level == "Medium" else "Phase 3 (18-36 months)"
+        rationale = ("Algorithm is not recognized by the scoring rules; identify and validate it before treating the asset as safe or selecting a migration target."
+                     if unknown_algorithm else threat_rationale(alg, usage, row["lifespan"]))
         rows.append({
             **row.to_dict(),
             "asset_id": _asset_id(row["asset_name"], used_ids),
