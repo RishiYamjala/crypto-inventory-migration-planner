@@ -96,6 +96,7 @@ def test_predicted_label_taxonomy_covers_all_six_classes():
     from src.problem import predicted_label
 
     assert predicted_label("RSA-2048", "TLS/HTTPS", "") == "QUANTUM_VULNERABLE"
+    assert predicted_label("Ed25519", "SSH", "") == "QUANTUM_VULNERABLE"
     assert predicted_label("ML-KEM", "KEM", "") == "QUANTUM_RESISTANT"
     assert predicted_label("HYBRID-KEM", "TLS/HTTPS", "") == "HYBRID"
     assert predicted_label("AES-256", "Encryption", "") == "SYMMETRIC_OR_HASH"
