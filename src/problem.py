@@ -116,16 +116,18 @@ def _asset_id(value, used):
 
 def predicted_label(algorithm, usage, migration):
     """Map observed algorithm evidence to the required six-class taxonomy."""
-    normalized = str(algorithm).strip().upper()
-    if normalized in {"HYBRID", "HYBRID-KEM", "HYBRID-KEY-EXCHANGE"} or "HYBRID" in normalized:
+    normalized = str(algorithm).strip().casefold()
+    if normalized in {"hybrid", "hybrid-kem", "hybrid-key-exchange"} or "hybrid" in normalized:
         return "HYBRID"
-    if normalized in {"ML-KEM", "ML-DSA", "SLH-DSA"}:
+    if normalized in {"ml-kem", "ml-dsa", "slh-dsa"}:
         return "QUANTUM_RESISTANT"
-    if normalized in LEGACY_BROKEN:
+    if normalized in {item.casefold() for item in LEGACY_BROKEN}:
         return "LEGACY_BROKEN"
-    if normalized in KEY_EXCHANGE or normalized in SIGNATURE or normalized in {"RSA", "RSA-2048", "RSA-3072", "ECC"}:
+    if (normalized in {item.casefold() for item in KEY_EXCHANGE}
+            or normalized in {item.casefold() for item in SIGNATURE}
+            or normalized in {"rsa", "rsa-2048", "rsa-3072", "ecc"}):
         return "QUANTUM_VULNERABLE"
-    if normalized in SYMMETRIC or normalized in HASHING:
+    if normalized in {item.casefold() for item in SYMMETRIC | HASHING}:
         return "SYMMETRIC_OR_HASH"
     return "UNKNOWN"
 
