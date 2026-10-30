@@ -175,6 +175,23 @@ The SWAP value is explicitly an **estimate**: extra compiled two-qubit gates div
 
 The JSON coupling maps are documented as **undirected physical couplings** and expanded into both directions for Qiskit transpilation. This is an explicit simulator assumption, not a claim about hidden hardware directionality. The Aer noise model is also a simplified research assumption: one-qubit depolarizing noise applies to listed non-two-qubit basis operations, CX-family depolarizing noise applies to listed two-qubit basis operations, and the readout error applies to measurements. The current settings follow the guide's illustrative values (CX `0.005`, readout `0.01`); they are not official calibration data.
 
+## Migration output schema
+
+Both `results/tables/inventory_scored.csv` and `results/tables/migration_plan.csv` expose the complete machine-readable migration contract:
+
+| Field | Meaning |
+|---|---|
+| `asset_id` | Stable readable ID derived from the asset name; duplicate names receive deterministic suffixes. |
+| `predicted_label` | One of `QUANTUM_VULNERABLE`, `QUANTUM_RESISTANT`, `HYBRID`, `SYMMETRIC_OR_HASH`, `LEGACY_BROKEN`, or `UNKNOWN`. |
+| `priority_score` | Numeric risk/priority score from 0 to 100. |
+| `priority_rank` | Deterministic rank after migration phase, score, and asset ID sorting. |
+| `recommended_action` | Role-aware migration recommendation. |
+| `migration_wave` | Planned phase window (0–6, 6–18, or 18–36 months). |
+| `depends_on` | Optional semicolon-separated dependency names supplied in the input inventory; blank when not provided. |
+| `rationale` | Human-readable reason for the classification and risk assessment. |
+
+The input inventory may optionally include a `depends_on` column. The planner preserves explicitly supplied dependencies and does not invent dependencies when the source inventory has none. The original columns (`risk_score`, `migration`, `phase`, and `risk_rationale`) remain available for backward compatibility.
+
 ## Outputs
 
 ### Tables
