@@ -146,3 +146,26 @@ def test_duplicate_asset_names_get_unique_deterministic_ids(tmp_path):
     df = score_inventory(source, tmp_path / "out")
     assert df["asset_id"].is_unique
     assert set(df["asset_id"]) == {"shared-api", "shared-api-2"}
+
+
+
+def test_unknown_algorithm_is_not_silently_marked_safe(tmp_path):
+    import csv
+
+    source = tmp_path / "unknown_algorithm.csv"
+    with source.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=[
+            "asset_name", "algorithm", "usage", "sensitivity", "lifespan",
+        ])
+        writer.writeheader()
+        writer.writerow({
+            "asset_name": "Uncatalogued crypto", "algorithm": "MysteryCipher",
+            "usage": "Unknown", "sensitivity": "High", "lifespan": "5-10 years",
+        })
+    df = score_inventory(source, tmp_path / "out")
+    item = df.iloc[0]
+    assert item["predicted_label"] == "UNKNOWN"
+    assert item["risk_level"] == "Unknown"
+    assert item["migration_wave"] == "Phase 1 (0-6 months)"
+    assert "validate" in item["recommended_action"].lower()
+    assert "not recognized" in item["rationale"].lower()
